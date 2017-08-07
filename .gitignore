@@ -58,6 +58,7 @@ fabric.properties
 
 # Package Files #
 *.jar
+!libs/*.jar
 *.war
 *.ear
 *.zip
@@ -82,4 +83,3 @@ gradle-app.setting
 # # Work around https://youtrack.jetbrains.com/issue/IDEA-116898
 # gradle/wrapper/gradle-wrapper.properties
 
-/libs/
