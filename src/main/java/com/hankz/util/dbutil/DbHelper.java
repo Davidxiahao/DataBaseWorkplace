@@ -6,11 +6,12 @@ import java.sql.*;
  * Created by HankZhang on 2017/8/7.
  */
 public class DbHelper {
-    private final String Class_Name = "org.sqlite.JDBC";
+    private final String Class_Name;
     private final String DB_URL;
 
-    public DbHelper(String db_url) {
+    public DbHelper(String class_Name, String db_url) {
         this.DB_URL = db_url;
+        this.Class_Name = class_Name;
     }
 
     /**
@@ -108,7 +109,7 @@ public class DbHelper {
 
     public void doQuery(String sql, StatementPreparor preparor, ResultProcessor processor) {
         try(Connection conn = createConnection();
-            PreparedStatement ps = conn.prepareStatement(sql);
+            PreparedStatement ps = conn.prepareStatement(sql)
         ) {
             preparor.prepare(ps);
             ResultSet rs = ps.executeQuery();
@@ -118,7 +119,6 @@ public class DbHelper {
             e.printStackTrace();
         }
     }
-
 
 
 }

@@ -11,14 +11,15 @@ import java.util.List;
  */
 public class SampleDbService {
     private final DbHelper dbHelper;
+    static final String dbUrl = "jdbc:mysql://10.141.209.138:6603/originchecker?user=originchecker&password=originchecker";
+    static final String JDBC_DRIVER = "com.mysql.jdbc.Driver";
 
     public SampleDbService() {
-        String dbUrl = "jdbc:sqlite:apk_hierarchy.db";
-        dbHelper = new DbHelper(dbUrl);
+        dbHelper = new DbHelper(JDBC_DRIVER, dbUrl);
     }
 
     public SampleDbService(String dbUrl) {
-        dbHelper = new DbHelper(dbUrl);
+        dbHelper = new DbHelper(JDBC_DRIVER, dbUrl);
     }
 
     /**
