@@ -6,6 +6,7 @@ import com.hankz.util.dbutil.LibraryInfo;
 import fdu.lab310.lib.analysis.ApkAnalysis;
 import soot.SootClass;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -17,15 +18,12 @@ public class Main {
         new ApkAnalysis("C:\\Users\\xiahao\\Desktop\\APK\\aio.instasaver.apk").doAnalysis();
 
         OriginCheckerDbService originCheckerDbService = new OriginCheckerDbService();
-        LibraryInfo libraryInfo = new LibraryInfo("com.baidu.map", "map_sdk_of_baidu", "a;b;c;d;e;f");
-        if (originCheckerDbService.insertLibraryInfo(libraryInfo)){
-            System.out.print("insert into libs success");
-        }
-        else {
-            System.out.print("insert into libs failure");
-        }
+        LibraryInfo libraryInfo = new LibraryInfo("com.baidu.map1", "map_sdk_of_baidu", "a;b;c;d");
+        originCheckerDbService.insertLibraryInfo(libraryInfo);
 
-        String fingerprintOfBaidumap = originCheckerDbService.getLibraryFingerprint("com.baidu.map");
-        System.out.print("fingerprint of baidu map sdk is " + fingerprintOfBaidumap);
+        List<String> libs = originCheckerDbService.searchLibsByFingerprint("map_sdk_of_baidu");
+        for(int i=0; i<libs.size(); i++){
+            System.out.println(libs.get(i));
+        }
     }
 }

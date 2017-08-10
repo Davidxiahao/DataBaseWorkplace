@@ -60,7 +60,7 @@ public class DbHelper {
              PreparedStatement ps = conn.prepareStatement(sql))
         {
             preparor.prepare(ps);
-            ps.executeUpdate(sql);
+            ps.executeUpdate();
             return true;
         } catch (SQLException e) {
             e.printStackTrace();
