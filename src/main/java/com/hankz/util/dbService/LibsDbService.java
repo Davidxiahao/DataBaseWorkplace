@@ -9,9 +9,9 @@ import java.util.stream.Collectors;
 
 public class LibsDbService {
     private final DbHelper dbHelper;
-    static final String dbUrl = "jdbc:mysql://10.141.209.138:6603/originchecker?" +
+    private static final String dbUrl = "jdbc:mysql://10.141.209.138:6603/originchecker?" +
             "user=originchecker&password=originchecker";
-    static final String JDBC_DRIVER = "com.mysql.jdbc.Driver";
+    private static final String JDBC_DRIVER = "com.mysql.jdbc.Driver";
 
     private boolean CACHE_SWITCH = false;
     private List<LibraryInfo> cacheList;
@@ -23,7 +23,7 @@ public class LibsDbService {
     private LibsDbService(boolean cacheSwitch) {
         this.CACHE_SWITCH = cacheSwitch;
         dbHelper = new DbHelper(JDBC_DRIVER, dbUrl);
-        if (cacheSwitch == true) loadAllData(false);
+        if (cacheSwitch) loadAllData(false);
     }
 
     private LibsDbService() {
@@ -32,7 +32,7 @@ public class LibsDbService {
 
     public void setCacheSwitch(boolean cacheSwitch) {
         this.CACHE_SWITCH = cacheSwitch;
-        if(cacheSwitch == true) loadAllData(false);
+        if(cacheSwitch) loadAllData(false);
     }
 
     public void loadAllData(boolean forceReload){
@@ -72,11 +72,11 @@ public class LibsDbService {
     public  boolean insertLibraryInfoList(List<LibraryInfo> list){
         String sql = "insert into libs (lib, fingerprint, liborigins, manual) values (?, ?, ?, ?)";
         return dbHelper.doBatchUpdate(sql, ps -> {
-            for(int i=0; i<list.size(); i++) {
-                ps.setString(1, list.get(i).lib);
-                ps.setString(2, list.get(i).fingerprint);
-                ps.setString(3, list.get(i).liborigins);
-                ps.setInt(4, list.get(i).manual);
+            for (LibraryInfo element:list){
+                ps.setString(1, element.lib);
+                ps.setString(2, element.fingerprint);
+                ps.setString(3, element.liborigins);
+                ps.setInt(4, element.manual);
             }
         });
     }
@@ -88,9 +88,8 @@ public class LibsDbService {
 
     public List<String> getLibraryList(){
         if (CACHE_SWITCH){
-            List<String> cacheResult = cacheList.stream().map(LibraryInfo::getLib).distinct().
+            return cacheList.stream().map(LibraryInfo::getLib).distinct().
                     collect(Collectors.toList());
-            return cacheResult;
         }else {
             String sql = "select lib from libs group by lib";
             List<String> result = new ArrayList<>();
@@ -147,9 +146,8 @@ public class LibsDbService {
 
     public List<String> searchLibsByFingerprint(String fingerprint){
         if (CACHE_SWITCH){
-            List<String> cacheResult = cacheList.stream().filter(c -> c.fingerprint.equals(fingerprint)).
+            return cacheList.stream().filter(c -> c.fingerprint.equals(fingerprint)).
                     map(LibraryInfo::getLib).collect(Collectors.toList());
-            return cacheResult;
         }else {
             String sql = "select lib from libs where fingerprint=?";
             List<String> result = new ArrayList<>();

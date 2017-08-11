@@ -9,9 +9,9 @@ import java.util.stream.Collectors;
 
 public class OriginDbService {
     private final DbHelper dbHelper;
-    static final String dbUrl = "jdbc:mysql://10.141.209.138:6603/originchecker?" +
+    private static final String dbUrl = "jdbc:mysql://10.141.209.138:6603/originchecker?" +
             "user=originchecker&password=originchecker";
-    static final String JDBC_DRIVER = "com.mysql.jdbc.Driver";
+    private static final String JDBC_DRIVER = "com.mysql.jdbc.Driver";
 
     private boolean CACHE_SWITCH = false;
     private List<OriginInfo> cacheList;
@@ -23,7 +23,7 @@ public class OriginDbService {
     private OriginDbService(boolean cacheSwitch) {
         this.CACHE_SWITCH = cacheSwitch;
         dbHelper = new DbHelper(JDBC_DRIVER, dbUrl);
-        if (cacheSwitch == true) loadAllData(false);
+        if (cacheSwitch) loadAllData(false);
     }
 
     private OriginDbService() {
@@ -32,7 +32,7 @@ public class OriginDbService {
 
     public void setCacheSwitch(boolean cacheSwitch) {
         this.CACHE_SWITCH = cacheSwitch;
-        if(cacheSwitch == true) loadAllData(false);
+        if(cacheSwitch) loadAllData(false);
     }
 
     public void loadAllData(boolean forceReload){
@@ -90,9 +90,8 @@ public class OriginDbService {
 
     public List<String> getApkList(){
         if (CACHE_SWITCH){
-            List<String> cacheResult = cacheList.stream().map(OriginInfo::getApk).distinct().
+            return cacheList.stream().map(OriginInfo::getApk).distinct().
                     collect(Collectors.toList());
-            return cacheResult;
         }else {
             String sql = "select apk from origins group by apk";
             List<String> result = new ArrayList<>();
@@ -127,9 +126,8 @@ public class OriginDbService {
 
     public List<String> getApkLibs(String apkname) {
         if (CACHE_SWITCH) {
-            List<String> cacheResult = cacheList.stream().filter(c -> c.apk.equals(apkname)).map(OriginInfo::getApk).
+            return cacheList.stream().filter(c -> c.apk.equals(apkname)).map(OriginInfo::getApk).
                     collect(Collectors.toList());
-            return cacheResult;
         } else {
             String sql = "select lib from origins where apk=?";
             List<String> result = new ArrayList<>();
