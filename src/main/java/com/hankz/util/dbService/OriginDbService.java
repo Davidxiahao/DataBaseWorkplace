@@ -9,7 +9,8 @@ import java.util.stream.Collectors;
 
 public class OriginDbService {
     private final DbHelper dbHelper;
-    static final String dbUrl = "jdbc:mysql://10.141.209.138:6603/originchecker?user=originchecker&password=originchecker";
+    static final String dbUrl = "jdbc:mysql://10.141.209.138:6603/originchecker?" +
+            "user=originchecker&password=originchecker";
     static final String JDBC_DRIVER = "com.mysql.jdbc.Driver";
 
     private boolean CACHE_SWITCH = false;
@@ -55,7 +56,7 @@ public class OriginDbService {
      */
 
     public boolean insertOriginInfo(OriginInfo originInfo){
-        String sql = "insert into origins values (?, ?, ?, ?, ?)";
+        String sql = "insert into origins (apk, unit, lib, webOrigins, codeOrigins) values (?, ?, ?, ?, ?)";
         return dbHelper.doUpdate(sql, ps -> {
             ps.setString(1, originInfo.apk);
             ps.setString(2, originInfo.unit);
@@ -66,7 +67,7 @@ public class OriginDbService {
     }
 
     public boolean insertOriginInfoList(List<OriginInfo> list){
-        String sql = "insert into origins values (?, ?, ?, ?, ?)";
+        String sql = "insert into origins (apk, unit, lib, webOrigins, codeOrigins) values (?, ?, ?, ?, ?)";
         return dbHelper.doBatchUpdate(sql, ps -> {
             for (OriginInfo originInfo : list) {
                 ps.setString(1, originInfo.apk);

@@ -42,7 +42,8 @@ public class LibsDbService {
             while (rs.next()) {
                 cacheList.add(new LibraryInfo(rs.getString("lib"),
                                               rs.getString("fingerprint"),
-                                              rs.getString("constants"))
+                                              rs.getString("liborigins"),
+                                              rs.getInt("manual"))
                 );
             }
         });
@@ -55,22 +56,23 @@ public class LibsDbService {
      */
 
     public boolean insertLibraryInfo(LibraryInfo libraryInfo){
-        String sql = "insert into libs (lib, fingerprint, constants) values (?, ?, ?)";
+        String sql = "insert into libs (lib, fingerprint, liborigins, manual) values (?, ?, ?, ?)";
         return dbHelper.doUpdate(sql, ps -> {
             ps.setString(1, libraryInfo.lib);
             ps.setString(2, libraryInfo.fingerprint);
-            ps.setString(3, libraryInfo.constants);
+            ps.setString(3, libraryInfo.liborigins);
+            ps.setInt(4, libraryInfo.manual);
         });
     }
 
     public  boolean insertLibraryInfoList(List<LibraryInfo> list){
-        String sql = "insert into libs values (?, ?, ?)";
+        String sql = "insert into libs (lib, fingerprint, liborigins, manual) values (?, ?, ?, ?)";
         return dbHelper.doBatchUpdate(sql, ps -> {
             for(int i=0; i<list.size(); i++) {
-                LibraryInfo libraryInfo = list.get(i);
-                ps.setString(1, libraryInfo.lib);
-                ps.setString(2, libraryInfo.fingerprint);
-                ps.setString(3, libraryInfo.constants);
+                ps.setString(1, list.get(i).lib);
+                ps.setString(2, list.get(i).fingerprint);
+                ps.setString(3, list.get(i).liborigins);
+                ps.setInt(4, list.get(i).manual);
             }
         });
     }
@@ -118,20 +120,20 @@ public class LibsDbService {
         }
     }
 
-    public String getLibraryConstants(String libraryName){
+    public String getLibraryOrigins(String libraryName){
         if (CACHE_SWITCH){
             List<String> cacheResult = cacheList.stream().filter(c -> c.lib == libraryName).
-                    map(LibraryInfo::getConstants).collect(Collectors.toList());
+                    map(LibraryInfo::getLiborigins).collect(Collectors.toList());
             if (cacheResult.isEmpty()) return null;
             return cacheResult.get(0);
         }else {
-            String sql = "select constants from libs where lib=?";
+            String sql = "select liborigins from libs where lib=?";
             List<String> result = new ArrayList<>();
             dbHelper.doQuery(sql,
                     ps -> ps.setString(1, libraryName),
                     rs -> {
                         while (rs.next()) {
-                            result.add(rs.getString("constants"));
+                            result.add(rs.getString("liborigins"));
                         }
                     });
             if (result.isEmpty()) return null;
