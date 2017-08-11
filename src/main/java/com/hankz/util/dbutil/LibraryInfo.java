@@ -10,4 +10,16 @@ public class LibraryInfo {
         this.fingerprint = fingerprint;
         this.constants = constants;
     }
+
+    public String getLib() {
+        return lib;
+    }
+
+    public String getFingerprint() {
+        return fingerprint;
+    }
+
+    public String getConstants() {
+        return constants;
+    }
 }

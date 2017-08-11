@@ -12,9 +12,37 @@ public class OriginCheckerDbService {
     static final String dbUrl = "jdbc:mysql://10.141.209.138:6603/originchecker?user=originchecker&password=originchecker";
     static final String JDBC_DRIVER = "com.mysql.jdbc.Driver";
 
-    public OriginCheckerDbService() {
+    private boolean CACHE_SWITCH = false;
+    private List<OriginInfo> cacheList;
+
+    public OriginCheckerDbService(boolean cacheSwitch) {
+        this.CACHE_SWITCH = cacheSwitch;
         dbHelper = new DbHelper(JDBC_DRIVER, dbUrl);
     }
+
+    public OriginCheckerDbService() {
+        this(false);
+    }
+
+    public void setCacheSwitch(boolean cacheSwitch) {
+        this.CACHE_SWITCH = cacheSwitch;
+    }
+
+//    public void loadAllData(boolean forceReload){
+//        if(cacheList != null && cacheList.size() > 0){
+//            if(!forceReload)
+//                return;
+//        }
+//        cacheList = new ArrayList<>();
+//        String sql = "SELECT * FROM libs";
+//        cacheList = dbHelper.doQuery(sql, rs -> {
+//            while (rs.next()) {
+//
+//                cacheList.add(new OriginInfo())
+//            }
+//        });
+//
+//    }
 
     /**
      * insert into libs
@@ -82,7 +110,7 @@ public class OriginCheckerDbService {
         String sql = "select lib from libs group by lib";
         List<String> result = new ArrayList<>();
         dbHelper.doQuery(sql, rs -> {
-            while (rs.next()){
+            while (rs.next()) {
                 result.add(rs.getString("lib"));
             }
         });
@@ -99,6 +127,19 @@ public class OriginCheckerDbService {
                         result.add(rs.getString("fingerprint"));
                     }
                     });
+        return result.get(0);
+    }
+
+    public String getLibraryConstants(String libraryName){
+        String sql = "select constants from libs where lib=?";
+        List<String> result = new ArrayList<>();
+        dbHelper.doQuery(sql,
+                ps -> ps.setString(1, libraryName),
+                rs -> {
+                    while (rs.next()){
+                        result.add(rs.getString("constants"));
+                    }
+                });
         return result.get(0);
     }
 
@@ -128,6 +169,19 @@ public class OriginCheckerDbService {
                 result.add(rs.getString("apk"));
             }
         });
+        return result;
+    }
+
+    public List<String> getApkLibs(String apkname){
+        String sql = "select lib from origins where apk=?";
+        List<String> result = new ArrayList<>();
+        dbHelper.doQuery(sql,
+                ps -> ps.setString(1,apkname),
+                rs -> {
+                    while (rs.next()){
+                        result.add(rs.getString("lib"));
+                    }
+                });
         return result;
     }
 }

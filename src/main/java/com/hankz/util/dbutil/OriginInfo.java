@@ -14,4 +14,24 @@ public class OriginInfo {
         this.webOrigins = webOrigins;
         this.codeOrigins = codeOrigins;
     }
+
+    public String getApk() {
+        return apk;
+    }
+
+    public String getUnit() {
+        return unit;
+    }
+
+    public String getLib() {
+        return lib;
+    }
+
+    public String getWebOrigins() {
+        return webOrigins;
+    }
+
+    public String getCodeOrigins() {
+        return codeOrigins;
+    }
 }
