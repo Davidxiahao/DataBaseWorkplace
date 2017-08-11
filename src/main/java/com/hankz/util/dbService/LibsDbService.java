@@ -9,20 +9,24 @@ import java.util.stream.Collectors;
 
 public class LibsDbService {
     private final DbHelper dbHelper;
-    static final String dbUrl = "jdbc:mysql://10.141.209.138:6603/originchecker?" +
+    private static final String dbUrl = "jdbc:mysql://10.141.209.138:6603/originchecker?" +
             "user=originchecker&password=originchecker";
-    static final String JDBC_DRIVER = "com.mysql.jdbc.Driver";
+    private static final String JDBC_DRIVER = "com.mysql.jdbc.Driver";
 
     private boolean CACHE_SWITCH = false;
     private List<LibraryInfo> cacheList;
 
-    public LibsDbService(boolean cacheSwitch) {
+    private static LibsDbService ourInstance = new LibsDbService();
+
+    public static LibsDbService getInstance(){return ourInstance;}
+
+    private LibsDbService(boolean cacheSwitch) {
         this.CACHE_SWITCH = cacheSwitch;
         dbHelper = new DbHelper(JDBC_DRIVER, dbUrl);
         if (cacheSwitch) loadAllData(false);
     }
 
-    public LibsDbService() {
+    private LibsDbService() {
         this(false);
     }
 
@@ -84,9 +88,8 @@ public class LibsDbService {
 
     public List<String> getLibraryList(){
         if (CACHE_SWITCH){
-            List<String> cacheResult = cacheList.stream().map(LibraryInfo::getLib).distinct().
+            return cacheList.stream().map(LibraryInfo::getLib).distinct().
                     collect(Collectors.toList());
-            return cacheResult;
         }else {
             String sql = "select lib from libs group by lib";
             List<String> result = new ArrayList<>();
@@ -101,7 +104,7 @@ public class LibsDbService {
 
     public String getLibraryFingerprint(String libraryName){
         if (CACHE_SWITCH){
-            List<String> cacheResult = cacheList.stream().filter(c -> c.lib == libraryName).
+            List<String> cacheResult = cacheList.stream().filter(c -> c.lib.equals(libraryName)).
                     map(LibraryInfo::getFingerprint).collect(Collectors.toList());
             if (cacheResult.isEmpty()) return null;
             return cacheResult.get(0);
@@ -122,7 +125,7 @@ public class LibsDbService {
 
     public String getLibraryOrigins(String libraryName){
         if (CACHE_SWITCH){
-            List<String> cacheResult = cacheList.stream().filter(c -> c.lib == libraryName).
+            List<String> cacheResult = cacheList.stream().filter(c -> c.lib.equals(libraryName)).
                     map(LibraryInfo::getLiborigins).collect(Collectors.toList());
             if (cacheResult.isEmpty()) return null;
             return cacheResult.get(0);
@@ -143,9 +146,8 @@ public class LibsDbService {
 
     public List<String> searchLibsByFingerprint(String fingerprint){
         if (CACHE_SWITCH){
-            List<String> cacheResult = cacheList.stream().filter(c -> c.fingerprint == fingerprint).
+            return cacheList.stream().filter(c -> c.fingerprint.equals(fingerprint)).
                     map(LibraryInfo::getLib).collect(Collectors.toList());
-            return cacheResult;
         }else {
             String sql = "select lib from libs where fingerprint=?";
             List<String> result = new ArrayList<>();
