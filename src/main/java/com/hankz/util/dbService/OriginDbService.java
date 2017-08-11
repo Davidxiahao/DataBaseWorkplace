@@ -16,13 +16,17 @@ public class OriginDbService {
     private boolean CACHE_SWITCH = false;
     private List<OriginInfo> cacheList;
 
-    public OriginDbService(boolean cacheSwitch) {
+    private static OriginDbService ourInstance = new OriginDbService();
+
+    public static OriginDbService getInstance(){return ourInstance;}
+
+    private OriginDbService(boolean cacheSwitch) {
         this.CACHE_SWITCH = cacheSwitch;
         dbHelper = new DbHelper(JDBC_DRIVER, dbUrl);
         if (cacheSwitch == true) loadAllData(false);
     }
 
-    public OriginDbService() {
+    private OriginDbService() {
         this(false);
     }
 
@@ -37,7 +41,7 @@ public class OriginDbService {
                 return;
         }
         cacheList = new ArrayList<>();
-        String sql = "SELECT * FROM libs";
+        String sql = "SELECT * FROM origins";
         dbHelper.doQuery(sql, rs -> {
             while (rs.next()) {
                 cacheList.add(new OriginInfo(rs.getString("apk"),
@@ -101,9 +105,29 @@ public class OriginDbService {
         }
     }
 
+    public List<OriginInfo> getAllData(){
+        if (CACHE_SWITCH){
+            return cacheList;
+        }else {
+            String sql = "select * from origins";
+            List<OriginInfo> result = new ArrayList<>();
+            dbHelper.doQuery(sql,
+                    rs -> {
+                        while (rs.next()){
+                            result.add(new OriginInfo(rs.getString("apk"),
+                                    rs.getString("unit"),
+                                    rs.getString("lib"),
+                                    rs.getString("webOrigins"),
+                                    rs.getString("codeOrigins")));
+                        }
+                    });
+            return result;
+        }
+    }
+
     public List<String> getApkLibs(String apkname) {
         if (CACHE_SWITCH) {
-            List<String> cacheResult = cacheList.stream().filter(c -> c.apk == apkname).map(OriginInfo::getApk).
+            List<String> cacheResult = cacheList.stream().filter(c -> c.apk.equals(apkname)).map(OriginInfo::getApk).
                     collect(Collectors.toList());
             return cacheResult;
         } else {

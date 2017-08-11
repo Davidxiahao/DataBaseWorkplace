@@ -16,13 +16,17 @@ public class LibsDbService {
     private boolean CACHE_SWITCH = false;
     private List<LibraryInfo> cacheList;
 
-    public LibsDbService(boolean cacheSwitch) {
+    private static LibsDbService ourInstance = new LibsDbService();
+
+    public static LibsDbService getInstance(){return ourInstance;}
+
+    private LibsDbService(boolean cacheSwitch) {
         this.CACHE_SWITCH = cacheSwitch;
         dbHelper = new DbHelper(JDBC_DRIVER, dbUrl);
         if (cacheSwitch == true) loadAllData(false);
     }
 
-    public LibsDbService() {
+    private LibsDbService() {
         this(false);
     }
 
@@ -101,7 +105,7 @@ public class LibsDbService {
 
     public String getLibraryFingerprint(String libraryName){
         if (CACHE_SWITCH){
-            List<String> cacheResult = cacheList.stream().filter(c -> c.lib == libraryName).
+            List<String> cacheResult = cacheList.stream().filter(c -> c.lib.equals(libraryName)).
                     map(LibraryInfo::getFingerprint).collect(Collectors.toList());
             if (cacheResult.isEmpty()) return null;
             return cacheResult.get(0);
@@ -122,7 +126,7 @@ public class LibsDbService {
 
     public String getLibraryOrigins(String libraryName){
         if (CACHE_SWITCH){
-            List<String> cacheResult = cacheList.stream().filter(c -> c.lib == libraryName).
+            List<String> cacheResult = cacheList.stream().filter(c -> c.lib.equals(libraryName)).
                     map(LibraryInfo::getLiborigins).collect(Collectors.toList());
             if (cacheResult.isEmpty()) return null;
             return cacheResult.get(0);
@@ -143,7 +147,7 @@ public class LibsDbService {
 
     public List<String> searchLibsByFingerprint(String fingerprint){
         if (CACHE_SWITCH){
-            List<String> cacheResult = cacheList.stream().filter(c -> c.fingerprint == fingerprint).
+            List<String> cacheResult = cacheList.stream().filter(c -> c.fingerprint.equals(fingerprint)).
                     map(LibraryInfo::getLib).collect(Collectors.toList());
             return cacheResult;
         }else {
