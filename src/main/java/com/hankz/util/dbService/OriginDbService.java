@@ -19,7 +19,7 @@ public class OriginDbService {
     public OriginDbService(boolean cacheSwitch) {
         this.CACHE_SWITCH = cacheSwitch;
         dbHelper = new DbHelper(JDBC_DRIVER, dbUrl);
-        if (cacheSwitch == true) loadAllData(false);
+        if (cacheSwitch) loadAllData(false);
     }
 
     public OriginDbService() {
@@ -28,7 +28,7 @@ public class OriginDbService {
 
     public void setCacheSwitch(boolean cacheSwitch) {
         this.CACHE_SWITCH = cacheSwitch;
-        if(cacheSwitch == true) loadAllData(false);
+        if(cacheSwitch) loadAllData(false);
     }
 
     public void loadAllData(boolean forceReload){

@@ -19,7 +19,7 @@ public class LibsDbService {
     public LibsDbService(boolean cacheSwitch) {
         this.CACHE_SWITCH = cacheSwitch;
         dbHelper = new DbHelper(JDBC_DRIVER, dbUrl);
-        if (cacheSwitch == true) loadAllData(false);
+        if (cacheSwitch) loadAllData(false);
     }
 
     public LibsDbService() {
@@ -28,7 +28,7 @@ public class LibsDbService {
 
     public void setCacheSwitch(boolean cacheSwitch) {
         this.CACHE_SWITCH = cacheSwitch;
-        if(cacheSwitch == true) loadAllData(false);
+        if(cacheSwitch) loadAllData(false);
     }
 
     public void loadAllData(boolean forceReload){
@@ -68,11 +68,11 @@ public class LibsDbService {
     public  boolean insertLibraryInfoList(List<LibraryInfo> list){
         String sql = "insert into libs (lib, fingerprint, liborigins, manual) values (?, ?, ?, ?)";
         return dbHelper.doBatchUpdate(sql, ps -> {
-            for(int i=0; i<list.size(); i++) {
-                ps.setString(1, list.get(i).lib);
-                ps.setString(2, list.get(i).fingerprint);
-                ps.setString(3, list.get(i).liborigins);
-                ps.setInt(4, list.get(i).manual);
+            for (LibraryInfo libInfo : list) {
+                ps.setString(1, libInfo.lib);
+                ps.setString(2, libInfo.fingerprint);
+                ps.setString(3, libInfo.liborigins);
+                ps.setInt(4, libInfo.manual);
             }
         });
     }
