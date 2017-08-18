@@ -11,7 +11,7 @@ public class LibsDbService {
     private final DbHelper dbHelper;
     private static final String dbUrl = "jdbc:mysql://10.141.209.138:6603/originchecker?" +
             "user=originchecker&password=originchecker";
-    private static final String JDBC_DRIVER = "com.mysql.jdbc.Driver";
+    private static final String JDBC_DRIVER = "com.mysql.cj.jdbc.Driver";
 
     private boolean CACHE_SWITCH = false;
     private List<LibraryInfo> cacheList;

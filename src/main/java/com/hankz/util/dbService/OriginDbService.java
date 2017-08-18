@@ -1,20 +1,21 @@
 package com.hankz.util.dbService;
 
 import com.hankz.util.dbutil.DbHelper;
-import com.hankz.util.dbutil.OriginInfo;
+import com.hankz.util.dbutil.OriginModel;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
 public class OriginDbService {
+
     private final DbHelper dbHelper;
     private static final String dbUrl = "jdbc:mysql://10.141.209.138:6603/originchecker?" +
             "user=originchecker&password=originchecker";
-    private static final String JDBC_DRIVER = "com.mysql.jdbc.Driver";
+    private static final String JDBC_DRIVER = "com.mysql.cj.jdbc.Driver";
 
     private boolean CACHE_SWITCH = false;
-    private List<OriginInfo> cacheList;
+    private List<OriginModel> cacheList;
 
     private static OriginDbService ourInstance = new OriginDbService();
 
@@ -44,7 +45,7 @@ public class OriginDbService {
         String sql = "SELECT * FROM origins";
         dbHelper.doQuery(sql, rs -> {
             while (rs.next()) {
-                cacheList.add(new OriginInfo(rs.getString("apk"),
+                cacheList.add(new OriginModel(rs.getString("apk"),
                                              rs.getString("unit"),
                                              rs.getString("lib"),
                                              rs.getString("webOrigins"),
@@ -55,30 +56,30 @@ public class OriginDbService {
 
     /**
      * insert into origins
-     * @param originInfo
+     * @param originModel
      * @return
      */
 
-    public boolean insertOriginInfo(OriginInfo originInfo){
+    public boolean insertOriginInfo(OriginModel originModel){
         String sql = "insert into origins (apk, unit, lib, webOrigins, codeOrigins) values (?, ?, ?, ?, ?)";
         return dbHelper.doUpdate(sql, ps -> {
-            ps.setString(1, originInfo.apk);
-            ps.setString(2, originInfo.unit);
-            ps.setString(3, originInfo.lib);
-            ps.setString(4, originInfo.webOrigins);
-            ps.setString(5, originInfo.codeOrigins);
+            ps.setString(1, originModel.apk);
+            ps.setString(2, originModel.unit);
+            ps.setString(3, originModel.lib);
+            ps.setString(4, originModel.webOrigins);
+            ps.setString(5, originModel.codeOrigins);
         });
     }
 
-    public boolean insertOriginInfoList(List<OriginInfo> list){
+    public boolean insertOriginInfoList(List<OriginModel> list){
         String sql = "insert into origins (apk, unit, lib, webOrigins, codeOrigins) values (?, ?, ?, ?, ?)";
         return dbHelper.doBatchUpdate(sql, ps -> {
-            for (OriginInfo originInfo : list) {
-                ps.setString(1, originInfo.apk);
-                ps.setString(2, originInfo.unit);
-                ps.setString(3, originInfo.lib);
-                ps.setString(4, originInfo.webOrigins);
-                ps.setString(5, originInfo.codeOrigins);
+            for (OriginModel originModel : list) {
+                ps.setString(1, originModel.apk);
+                ps.setString(2, originModel.unit);
+                ps.setString(3, originModel.lib);
+                ps.setString(4, originModel.webOrigins);
+                ps.setString(5, originModel.codeOrigins);
             }
         });
     }
@@ -90,7 +91,7 @@ public class OriginDbService {
 
     public List<String> getApkList(){
         if (CACHE_SWITCH){
-            return cacheList.stream().map(OriginInfo::getApk).distinct().
+            return cacheList.stream().map(OriginModel::getApk).distinct().
                     collect(Collectors.toList());
         }else {
             String sql = "select apk from origins group by apk";
@@ -104,16 +105,16 @@ public class OriginDbService {
         }
     }
 
-    public List<OriginInfo> getAllData(){
+    public List<OriginModel> getAllData(){
         if (CACHE_SWITCH){
             return cacheList;
         }else {
             String sql = "select * from origins";
-            List<OriginInfo> result = new ArrayList<>();
+            List<OriginModel> result = new ArrayList<>();
             dbHelper.doQuery(sql,
                     rs -> {
                         while (rs.next()){
-                            result.add(new OriginInfo(rs.getString("apk"),
+                            result.add(new OriginModel(rs.getString("apk"),
                                     rs.getString("unit"),
                                     rs.getString("lib"),
                                     rs.getString("webOrigins"),
@@ -126,7 +127,7 @@ public class OriginDbService {
 
     public List<String> getApkLibs(String apkname) {
         if (CACHE_SWITCH) {
-            return cacheList.stream().filter(c -> c.apk.equals(apkname)).map(OriginInfo::getApk).
+            return cacheList.stream().filter(c -> c.apk.equals(apkname)).map(OriginModel::getApk).
                     collect(Collectors.toList());
         } else {
             String sql = "select lib from origins where apk=?";

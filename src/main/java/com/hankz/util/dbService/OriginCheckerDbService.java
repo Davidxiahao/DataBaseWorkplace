@@ -2,7 +2,7 @@
 //
 //import com.hankz.util.dbutil.DbHelper;
 //import com.hankz.util.dbutil.LibraryInfo;
-//import com.hankz.util.dbutil.OriginInfo;
+//import com.hankz.util.dbutil.OriginModel;
 //
 //import java.util.ArrayList;
 //import java.util.List;
@@ -13,7 +13,7 @@
 //    static final String JDBC_DRIVER = "com.mysql.jdbc.Driver";
 //
 //    private boolean CACHE_SWITCH = false;
-//    private List<OriginInfo> cacheList;
+//    private List<OriginModel> cacheList;
 //
 //    public OriginCheckerDbService(boolean cacheSwitch) {
 //        this.CACHE_SWITCH = cacheSwitch;
@@ -38,7 +38,7 @@
 ////        cacheList = dbHelper.doQuery(sql, rs -> {
 ////            while (rs.next()) {
 ////
-////                cacheList.add(new OriginInfo())
+////                cacheList.add(new OriginModel())
 ////            }
 ////        });
 ////
@@ -77,7 +77,7 @@
 //     * @return
 //     */
 //
-//    public boolean insertOriginInfo(OriginInfo originInfo){
+//    public boolean insertOriginInfo(OriginModel originInfo){
 //        String sql = "insert into origins values (?, ?, ?, ?, ?)";
 //        return dbHelper.doUpdate(sql, ps -> {
 //            ps.setString(1, originInfo.apk);
@@ -88,10 +88,10 @@
 //        });
 //    }
 //
-//    public boolean insertOriginInfoList(List<OriginInfo> list){
+//    public boolean insertOriginInfoList(List<OriginModel> list){
 //        String sql = "insert into origins values (?, ?, ?, ?, ?)";
 //        return dbHelper.doBatchUpdate(sql, ps -> {
-//            for (OriginInfo originInfo : list) {
+//            for (OriginModel originInfo : list) {
 //                ps.setString(1, originInfo.apk);
 //                ps.setString(2, originInfo.unit);
 //                ps.setString(3, originInfo.lib);

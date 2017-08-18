@@ -12,7 +12,7 @@ import java.util.List;
 public class SampleDbService {
     private final DbHelper dbHelper;
     static final String dbUrl = "jdbc:mysql://10.141.209.138:6603/originchecker?user=originchecker&password=originchecker";
-    static final String JDBC_DRIVER = "com.mysql.jdbc.Driver";
+    static final String JDBC_DRIVER = "com.mysql.cj.jdbc.Driver";
 
     public SampleDbService() {
         dbHelper = new DbHelper(JDBC_DRIVER, dbUrl);
