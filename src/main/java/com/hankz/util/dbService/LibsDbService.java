@@ -26,7 +26,7 @@ public class LibsDbService {
         if (cacheSwitch) loadAllData(false);
     }
 
-    private LibsDbService() {
+    public LibsDbService() {
         this(false);
     }
 
