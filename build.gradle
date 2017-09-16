@@ -16,5 +16,7 @@ dependencies {
 
     // https://mvnrepository.com/artifact/mysql/mysql-connector-java
     compile group: 'mysql', name: 'mysql-connector-java', version: '6.0.6'
+    // https://mvnrepository.com/artifact/net.sf.jwordnet/jwnl
+    compile group: 'net.sf.jwordnet', name: 'jwnl', version: '1.4_rc3'
 
 }
