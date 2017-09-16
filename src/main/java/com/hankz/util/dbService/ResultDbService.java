@@ -2,6 +2,7 @@ package com.hankz.util.dbService;
 
 import com.hankz.util.dbutil.DbHelper;
 import com.hankz.util.dbutil.OriginModel;
+import com.hankz.util.dbutil.ResultModel;
 
 import java.util.List;
 
@@ -28,6 +29,25 @@ public class ResultDbService {
                         "codeOrigins    text)";
 
         dbHelper.doUpdate(sql);
+    }
+
+    public void creatTableTest(){
+        String sql =    "create table   test"  +
+                        "(apk           text," +
+                        "samestring     text)";
+
+        dbHelper.doUpdate(sql);
+    }
+
+    public void insertTest(List<ResultModel> list){
+        String sql = "insert into test (apk, samestring) values (?, ?)";
+        dbHelper.doUpdate(sql, ps -> {
+            for (ResultModel resultModel : list) {
+                ps.setString(1, resultModel.apk);
+                ps.setString(2, resultModel.sameString);
+                ps.addBatch();
+            }
+        });
     }
 
     public void insertOriginInfoList(List<OriginModel> list){

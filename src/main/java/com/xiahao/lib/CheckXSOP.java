@@ -15,68 +15,44 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public class CheckXSOP {
-    private CheckXSOP(){}
+    private CheckXSOP(){
+        String propsFile = "file_properties.xml";
+        try {
+            // initialize JWNL (this must be done before JWNL can be used)
+            JWNL.initialize(new FileInputStream(propsFile));
+        } catch (Exception ex) {
+            ex.printStackTrace();
+            System.exit(-1);
+        }
+    }
 
     private static CheckXSOP myInstance = new CheckXSOP();
 
     public static CheckXSOP getInstance(){return myInstance;}
 
-
-    private void test(){
-        String urlStr = "http://www.baikeapp.baidu.com";
-        Url url = new Url(urlStr);
-        url.getHost();
-
-        if (url.isMeaningfulUrl()) {
-            List<String> hosts = url.getIdentitiesOfHost();
-        }
-    }
-
-
     private static List<String> substringResult = new ArrayList<>();
 
-    public static List<String> getMainName(String url){
+    private static List<String> getUrlMainName(String url){
 
         List<String> result = new ArrayList<>();
 
-        for (String weburl : url.split(";")){
-            if (weburl.indexOf("://") != -1){
-                result.addAll(findIdentifiedUrl(weburl.split("://")[1].
-                        split("/")[0]));
-            }
-            else {
-                result.addAll(findIdentifiedUrl(weburl.split("/")[0]));
+        for (String string : url.split(";")){
+            Url webUrl = new Url(string);
+            webUrl.getHost();
+            if (webUrl.isMeaningfulUrl()){
+                result.addAll(webUrl.getIdentitiesOfHost());
             }
         }
 
         return result;
     }
 
-    public final static List<String> INTERNATIONAL = Arrays.asList("com", "edu", "gov", "int", "mil", "net", "org",
-            "biz", "info", "pro", "name", "museum", "coop", "aero", "xxx", "idv");
-
-    public final static List<String> NATIONAL = Arrays.asList("au", "mo", "br", "de", "ru", "fr", "kr", "ca", "ky",
-            "us", "za", "eu", "jp", "tw", "hk", "sg", "in", "uk", "cn", "co", "no", "io", "me", "at", "gl" ,"hr", "pl",
-            "vn", "tv", "gr", "to", "tr", "be", "th", "es", "se", "it", "bg", "eg", "is", "su", "ph", "nl", "al", "pe",
-            "il", "ua", "ae", "fi", "pk", "dk", "hu", "ch", "do", "cc", "ro", "ly", "ir", "re", "ar", "am", "sk", "mx",
-            "my", "id", "im", "mn", "rs", "nz", "pa", "az", "st");
-
-    public final static List<String> SUFFIX = Arrays.asList("htm", "html", "asp", "php", "jsp", "shtml", "nsp", "cgi",
-            "aspx", "xml");
-
-    public final static List<String> PREFIX = Arrays.asList("www", "bbs", "play", "sdk", "ads", "ws", "payment",
-            "maps", "market", "docs", "web", "mobile", "accounts", "app", "ad", "api", "wap", "oauth", "android",
-            "secure", "dl", "video", "store", "cloud", "feedback", "book", "user", "checkin", "dev", "news", "login",
-            "app3", "profil", "img", "partner", "service", "box", "build", "search", "nhis", "nip", "auth", "blog",
-            "connect", "mw", "www1", "test", "help", "cdn", "sites", "support", "mall", "member");
-
-    public static List<String> findIdentifiedUrl(String url){
+    public static List<String> getPackMainName(String url){
         String[] buff = url.split("\\.");
         List<String> result = new ArrayList<>();
 
         for (String codeString : buff){
-            if (!INTERNATIONAL.contains(codeString) && !NATIONAL.contains(codeString) &&
-                    !SUFFIX.contains(codeString) && !PREFIX.contains(codeString)){
+            if (!PredefinedList.ignoredWordSetInWebHost.contains(codeString)){
                 result.add(codeString);
             }
         }
@@ -91,22 +67,19 @@ public class CheckXSOP {
         List<String> webMainName = new ArrayList<>();
         List<String> packMainName = new ArrayList<>();
 
-        webMainName.addAll(getMainName(webOrigins));
-        packMainName.addAll(getMainName(packName));
+        webMainName.addAll(getUrlMainName(webOrigins));
+        packMainName.addAll(getPackMainName(packName));
 
-        String propsFile = "file_properties.xml";
+
+
         try {
-            // initialize JWNL (this must be done before JWNL can be used)
-            JWNL.initialize(new FileInputStream(propsFile));
-
-            System.out.println("==========================================================");
             List<String> webOriginsSubString = new ArrayList<>();
             List<String> packSubString = new ArrayList<>();
 
             String reg = "[^a-z]";
             Pattern matchsip = Pattern.compile(reg);
 
-            for (String str : webMainName){
+            for (String str : webMainName) {
                 substringResult.clear();
 
 
@@ -115,36 +88,33 @@ public class CheckXSOP {
                 string = mp.replaceAll("");
 
                 //要运行了haveSubString才会有substringResult
-                if (haveSubString(string)){
+                if (haveSubString(string)) {
                     webOriginsSubString.addAll(substringResult);
-                }
-                else {
+                } else {
                     webOriginsSubString.addAll(substringResult);
                     webOriginsSubString.add(string);
                 }
             }
 
-            for (String str : packMainName){
+            for (String str : packMainName) {
                 substringResult.clear();
 
                 String string = str.toLowerCase();
                 Matcher mp = matchsip.matcher(string);
                 string = mp.replaceAll("");
 
-                if (haveSubString(string)){
+                if (haveSubString(string)) {
                     packSubString.addAll(substringResult);
-                }
-                else {
+                } else {
                     packSubString.addAll(substringResult);
                     packSubString.add(string);
                 }
             }
 
             webOriginsSubString.retainAll(packSubString);
-            if (webOriginsSubString.size() == 0){
+            if (webOriginsSubString.size() == 0) {
                 return true;
-            }
-            else {
+            } else {
                 sameString.clear();
                 sameString.addAll(webOriginsSubString);
             }
@@ -152,6 +122,7 @@ public class CheckXSOP {
             ex.printStackTrace();
             System.exit(-1);
         }
+
 
         return false;
     }

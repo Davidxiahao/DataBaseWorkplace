@@ -105,6 +105,7 @@ public class OriginDbService {
                 ps.setString(3, originModel.lib);
                 ps.setString(4, originModel.webOrigins);
                 ps.setString(5, originModel.codeOrigins);
+                ps.addBatch();
             }
         });
     }
@@ -128,6 +129,29 @@ public class OriginDbService {
             });
             return result;
         }
+    }
+
+    public List<ExtendOriginModel> getExtendData(){
+        String sql = "select * from xsop_bak where isXSOP=0";
+        List<ExtendOriginModel> result = new ArrayList<>();
+        dbHelper.doQuery(sql,
+                rs -> {
+                    while (rs.next()){
+                        ExtendOriginModel extendOriginModel = new ExtendOriginModel(new OriginModel(
+                                                                            rs.getString("apk"),
+                                                                            rs.getString("unit"),
+                                                                            rs.getString("lib"),
+                                                                            rs.getString("webOrigins"),
+                                                                            rs.getString("codeOrigins"))
+                                                                                    );
+
+                        extendOriginModel.isXSOP = rs.getInt("isXSOP");
+
+                        result.add(extendOriginModel);
+                    }
+                });
+
+        return result;
     }
 
     public List<OriginModel> getAllData(){
