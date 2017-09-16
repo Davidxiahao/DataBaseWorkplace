@@ -77,7 +77,7 @@ public class Url {
             path = origStr.substring(idx + 1, origStr.length());
         } else {
             Matcher matcher = hostPattern.matcher(origStr);
-            if(matcher.find() && matcher.start() != 0){
+            if(matcher.find() && (matcher.start() == 0 || (matcher.start() < 2) && origStr.startsWith(".*"))){
                 host = matcher.group();
                 path = origStr.substring(matcher.end());
             }
