@@ -24,13 +24,6 @@ public class Url {
         parseUrl(origStr);
     }
 
-    public Url(String protocol, String host, int port, String path) {
-        this.protocol = protocol;
-        this.host = host;
-        this.port = port;
-        this.path = path;
-    }
-
 
     public String getProtocol() {
         return protocol;

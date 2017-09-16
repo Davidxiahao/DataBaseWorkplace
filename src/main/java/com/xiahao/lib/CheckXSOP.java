@@ -22,6 +22,17 @@ public class CheckXSOP {
     public static CheckXSOP getInstance(){return myInstance;}
 
 
+    private void test(){
+        String urlStr = "http://www.baikeapp.baidu.com";
+        Url url = new Url(urlStr);
+        url.getHost();
+
+        if (url.isMeaningfulUrl()) {
+            List<String> hosts = url.getIdentitiesOfHost();
+        }
+    }
+
+
     private static List<String> substringResult = new ArrayList<>();
 
     public static List<String> getMainName(String url){
