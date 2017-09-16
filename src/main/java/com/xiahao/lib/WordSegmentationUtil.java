@@ -1,5 +1,8 @@
 package com.xiahao.lib;
 
+import java.util.Arrays;
+import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 /**
@@ -12,7 +15,9 @@ public class WordSegmentationUtil {
      * @param helperStr package name from codeOrigins to help the segmentation.
      * @return
      */
-    public static Set<String> segmentWord(String targetStr, String helperStr) {
-        return null;
+    public static Set<String> segmentWord(List<String> targetStr, String helperStr) {
+        Set<String> result = new HashSet<>();
+        result.addAll(targetStr);
+        return result;
     }
 }
