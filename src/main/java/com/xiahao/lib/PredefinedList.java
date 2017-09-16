@@ -13,8 +13,9 @@ public class PredefinedList {
             "vn", "tv", "gr", "to", "tr", "be", "th", "es", "se", "it", "bg", "eg", "is", "su", "ph", "nl", "al", "pe",
             "il", "ua", "ae", "fi", "pk", "dk", "hu", "ch", "do", "cc", "ro", "ly", "ir", "re", "ar", "am", "sk", "mx",
             "my", "id", "im", "mn", "rs", "nz", "pa", "az", "st");
-    public final static List<String> SUFFIX = Arrays.asList("htm", "html", "asp", "php", "jsp", "js", "shtml", "nsp", "cgi",
-            "aspx", "xml", "jsf", "txt");
+    public final static List<String> SUFFIX = Arrays.asList("css", "swf", "cgi", "gif", "jsp", "js", "caf", "nsp", "m3u",
+            "mov", "xml", "aspx", "jpeg", "html", "shtml", "3gp", "apk", "jpg", "zip", "htm", "wmv", "xlsx", "mpg",
+            "png", "docx", "woff", "mp4", "mp3", "txt", "pdf", "ppt", "doc", "php", "m3u8", "jsf", "xls", "asp");
     public final static List<String> PREFIX = Arrays.asList("www", "bbs", "play", "sdk", "ads", "ws", "payment",
             "maps", "market", "docs", "web", "mobile", "accounts", "app", "ad", "api", "wap", "oauth", "android",
             "secure", "dl", "video", "store", "cloud", "feedback", "book", "user", "checkin", "dev", "news", "login",
