@@ -17,11 +17,11 @@ import java.util.stream.Collectors;
 public class OriginDbService {
 
     private final DbHelper dbHelper;
-    private static final String dbUrl = "jdbc:mysql://10.141.209.138:6603/originchecker?" +
+    private static final String dbUrl = "jdbc:mysql://10.141.209.138:6603/xsop?" +
             "user=originchecker&password=originchecker";
     private static final String JDBC_DRIVER = "com.mysql.jdbc.Driver";
 
-    public String table = "xsop_gp4w";
+    public String table = "origins_gp4w_2";
 
     private boolean CACHE_SWITCH = false;
     private List<OriginModel> cacheList;
