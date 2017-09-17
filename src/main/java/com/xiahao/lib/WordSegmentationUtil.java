@@ -49,30 +49,27 @@ public class WordSegmentationUtil {
             for (String str : targetStr) {
                 substringResult.clear();
 
-
                 String string = str.toLowerCase();
                 Matcher mp = matchsip.matcher(string);
                 string = mp.replaceAll("");
 
-                //要运行了haveSubString才会有substringResult
-                if (haveSubString(string)) {
-                    webOriginsSubString.addAll(substringResult);
-                } else {
-                    webOriginsSubString.addAll(substringResult);
-                    webOriginsSubString.add(string);
-                }
+                haveSubString(string);
+                webOriginsSubString.addAll(substringResult);
+                webOriginsSubString.add(string);
+
             }
 
             boolean xsop = true;
-            for (String str : substringResult) {
+            for (String str : webOriginsSubString) {
                 if (helperStr.contains(str)){
+                    //System.out.println(str + "#####");
                     result.add(str);
                     xsop = false;
                 }
             }
 
             if (xsop){
-                result.addAll(substringResult);
+                result.addAll(webOriginsSubString);
             }
         } catch (Exception ex) {
             ex.printStackTrace();
@@ -82,46 +79,36 @@ public class WordSegmentationUtil {
         return result;
     }
 
-    private static boolean haveSubString(String str) throws JWNLException {
-        if (str.equals("")){
-            return true;
-        }
-
-        if (str.substring(0, 1).equals("a") || str.substring(0, 1).equals("i") || str.substring(0, 1).equals("x")){
-            if (haveSubString(str.substring(1, str.length()))){
-                return true;
-            }
-            substringResult.remove(str.substring(0, 1));
-        }
+    private static void haveSubString(String str) throws JWNLException {
 
         for (int i=3; i<=str.length(); i++){
             String temp = str.substring(0, i);
+            //System.out.println(temp);
             String rest = str.substring(i, str.length());
-            if (    net.didion.jwnl.dictionary.Dictionary.getInstance().lookupIndexWord(POS.NOUN, temp) != null ||
-                    net.didion.jwnl.dictionary.Dictionary.getInstance().lookupIndexWord(POS.VERB, temp) != null ||
-                    net.didion.jwnl.dictionary.Dictionary.getInstance().lookupIndexWord(POS.ADJECTIVE, temp) != null ||
-                    net.didion.jwnl.dictionary.Dictionary.getInstance().lookupIndexWord(POS.ADVERB, temp) != null) {
-
-                if (haveSubString(str.substring(i, str.length()))) {
-                    if (temp.length() >= 3 && !substringResult.contains(temp)){substringResult.add(temp);}
-                    if (rest.length() >= 3 && !substringResult.contains(rest)){substringResult.add(rest);}
-                    return true;
-                }
-                //substringResult.remove(temp);
+            if (    Dictionary.getInstance().lookupIndexWord(POS.NOUN, temp) != null ||
+                    Dictionary.getInstance().lookupIndexWord(POS.VERB, temp) != null ||
+                    Dictionary.getInstance().lookupIndexWord(POS.ADJECTIVE, temp) != null ||
+                    Dictionary.getInstance().lookupIndexWord(POS.ADVERB, temp) != null) {
+                //System.out.println("isWord");
+                if (temp.length() >= 3 && !substringResult.contains(temp)){substringResult.add(temp);}
+                if (rest.length() >= 3 && !substringResult.contains(rest)){substringResult.add(rest);}
+                haveSubString(str.substring(i, str.length()));
             }
 
             if (i < str.length()-2) {
                 temp = str.substring(i, str.length());
                 rest = str.substring(0, i);
-                if (    net.didion.jwnl.dictionary.Dictionary.getInstance().lookupIndexWord(POS.NOUN, temp) != null ||
-                        net.didion.jwnl.dictionary.Dictionary.getInstance().lookupIndexWord(POS.VERB, temp) != null ||
-                        net.didion.jwnl.dictionary.Dictionary.getInstance().lookupIndexWord(POS.ADJECTIVE, temp) != null ||
+                //System.out.println(temp);
+                if (    Dictionary.getInstance().lookupIndexWord(POS.NOUN, temp) != null ||
+                        Dictionary.getInstance().lookupIndexWord(POS.VERB, temp) != null ||
+                        Dictionary.getInstance().lookupIndexWord(POS.ADJECTIVE, temp) != null ||
                         Dictionary.getInstance().lookupIndexWord(POS.ADVERB, temp) != null) {
+                    //System.out.println("isWord");
                     if (temp.length() >= 3 && !substringResult.contains(temp)){substringResult.add(temp);}
                     if (rest.length() >= 3 && !substringResult.contains(rest)){substringResult.add(rest);}
+                    haveSubString(str.substring(0, i));
                 }
             }
         }
-        return false;
     }
 }
