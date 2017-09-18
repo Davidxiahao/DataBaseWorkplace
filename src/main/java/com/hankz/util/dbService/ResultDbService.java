@@ -34,17 +34,21 @@ public class ResultDbService {
     public void creatTableTest(){
         String sql =    "create table   test"  +
                         "(apk           text," +
+                        "weborigins     text," +
+                        "packagename    text," +
                         "samestring     text)";
 
         dbHelper.doUpdate(sql);
     }
 
     public void insertTest(List<ResultModel> list){
-        String sql = "insert into test (apk, samestring) values (?, ?)";
-        dbHelper.doUpdate(sql, ps -> {
+        String sql = "insert into test (apk, weborigins, packagename, samestring) values (?, ?, ?, ?)";
+        dbHelper.doBatchUpdate(sql, ps -> {
             for (ResultModel resultModel : list) {
                 ps.setString(1, resultModel.apk);
-                ps.setString(2, resultModel.sameString);
+                ps.setString(2, resultModel.webOrigins);
+                ps.setString(3, resultModel.packName);
+                ps.setString(4, resultModel.sameString);
                 ps.addBatch();
             }
         });
