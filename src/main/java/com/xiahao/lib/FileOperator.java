@@ -1,9 +1,6 @@
 package com.xiahao.lib;
 
-import java.io.BufferedReader;
-import java.io.FileInputStream;
-import java.io.IOException;
-import java.io.InputStreamReader;
+import java.io.*;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -31,5 +28,15 @@ public class FileOperator {
         }
 
         return readResult;
+    }
+
+    public static void putLinesToFile(String fileName, String lines) {
+        try (FileWriter writer = new FileWriter(fileName);
+             BufferedWriter bufferedWriter = new BufferedWriter(writer))
+        {
+            bufferedWriter.write(lines);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 }

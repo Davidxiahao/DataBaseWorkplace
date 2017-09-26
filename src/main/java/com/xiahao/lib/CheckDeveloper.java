@@ -11,10 +11,11 @@ public class CheckDeveloper {
 
         data.forEach(line -> {
             Set<String> wordsInDevelopers = new HashSet<>();
-            wordsInDevelopers.addAll(Arrays.asList(line.developers.split(" ")));
+            String normalizeDevelopers = line.developers.replaceAll("[^0-9a-zA-Z]", " ").toLowerCase();
+            wordsInDevelopers.addAll(Arrays.asList(normalizeDevelopers.split(" ")));
             boolean isContain = false;
             for (String word : wordsInDevelopers){
-                if (line.pkg_name.contains(word)){
+                if (line.pkg_name.toLowerCase().contains(word)){
                     isContain = true;
                     break;
                 }
@@ -35,14 +36,19 @@ public class CheckDeveloper {
         allRecords.addAll(GpDbService.getInstance().getAllRecords());
         result.addAll(haveDifferentName(allRecords));
 
+        List<String> output = new ArrayList<>();
+
         result.forEach(line -> {
-            System.out.println("================================================");
-            System.out.println(line.pkg_name);
-            System.out.println(line.developers);
-            System.out.println("================================================");
+            output.add("================================================");
+            output.add(line.pkg_name);
+            output.add(line.developers);
+            output.add("================================================");
         });
 
-        System.out.println(result.size());
-        System.out.println(allRecords.size());
+        output.add(result.size()+"");
+        output.add(allRecords.size()+"");
+        output.add((float)result.size()/allRecords.size()+"");
+
+        FileOperator.putLinesToFile("results/pkgname_and_developer", String.join("\n", output));
     }
 }
