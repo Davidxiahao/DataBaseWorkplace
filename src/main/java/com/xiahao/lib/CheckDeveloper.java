@@ -6,6 +6,9 @@ import com.hankz.util.dbutil.GooglePlayModel;
 import java.util.*;
 
 public class CheckDeveloper {
+    private static List<String> sameWord = new ArrayList<>();
+    //private static List<String> test = new ArrayList<>();
+
     public static List<GooglePlayModel> haveDifferentName(List<GooglePlayModel> data){
         List<GooglePlayModel> result = new ArrayList<>();
 
@@ -14,9 +17,16 @@ public class CheckDeveloper {
             String normalizeDevelopers = line.developers.replaceAll("[^0-9a-zA-Z]", " ").toLowerCase();
             wordsInDevelopers.addAll(Arrays.asList(normalizeDevelopers.split(" ")));
             boolean isContain = false;
+            //test.add(line.developers);
             for (String word : wordsInDevelopers){
-                if (line.pkg_name.toLowerCase().contains(word)){
+                //test.add(word);
+                if (word.length()>1 && line.pkg_name.toLowerCase().contains(word)){
                     isContain = true;
+                    sameWord.add("================================================");
+                    sameWord.add(line.pkg_name);
+                    sameWord.add(line.developers);
+                    sameWord.add("The same word is : " + word);
+                    sameWord.add("================================================");
                     break;
                 }
             }
@@ -50,5 +60,7 @@ public class CheckDeveloper {
         output.add((float)result.size()/allRecords.size()+"");
 
         FileOperator.putLinesToFile("results/pkgname_and_developer", String.join("\n", output));
+        FileOperator.putLinesToFile("results/same_word", String.join("\n", sameWord));
+        //FileOperator.putLinesToFile("results/test", String.join("\n", test));
     }
 }
