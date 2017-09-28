@@ -4,14 +4,13 @@ import com.hankz.util.dbService.OriginDbService;
 import com.hankz.util.dbService.ResultDbService;
 import com.hankz.util.dbutil.OriginModel;
 import com.hankz.util.dbutil.ResultModel;
+import com.xiahao.lib.FileOperator;
 import com.xiahao.lib.FindMIX;
 import com.xiahao.lib.Url;
 import com.xiahao.lib.WordSegmentationUtil;
 
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.io.File;
+import java.util.*;
 
 
 /**
@@ -19,5 +18,16 @@ import java.util.Set;
  */
 public class Main {
     public static void main(String[] args) {
+        List<String> input = FileOperator.readFileByCharacter("public_suffix_list_before");
+        Iterator<String> stringIterator = input.iterator();
+
+        while (stringIterator.hasNext()){
+            String line = stringIterator.next();
+            if (line.length() == 0 || line.indexOf("//") == 0){
+                stringIterator.remove();
+            }
+        }
+
+        FileOperator.putLinesToFile("public_suffix_list", String.join("\n", input));
     }
 }
