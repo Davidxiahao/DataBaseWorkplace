@@ -1,10 +1,13 @@
 package com.hankz.util.dbService;
 
 import com.hankz.util.dbutil.DbHelper;
+import com.hankz.util.dbutil.FinalOriginYYBModel;
 import com.hankz.util.dbutil.LibraryInfo;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 public class LibsDbService {
@@ -51,6 +54,34 @@ public class LibsDbService {
                 );
             }
         });
+    }
+
+    private List<FinalOriginYYBModel> cacheListOfyyb0818_13w;
+
+    public void loadAllDataFromyyb0818_13w(){
+        cacheListOfyyb0818_13w = new ArrayList<>();
+        String sql = "select * from final_origin_yyb0818_13w";
+        dbHelper.doQuery(sql, rs -> {
+            while (rs.next()){
+                cacheListOfyyb0818_13w.add(new FinalOriginYYBModel( rs.getInt("idx"),
+                                                                    rs.getString("apk"),
+                                                                    rs.getString("unit"),
+                                                                    rs.getString("declaringClass"),
+                                                                    rs.getString("webOrigins"),
+                                                                    rs.getString("codeOrigins"),
+                                                                    rs.getString("webHelpInfo"),
+                                                                    rs.getString("codeHelpInfo")
+                ));
+            }
+        });
+    }
+
+    public Map<String, String> apphashTocodeOrigins = new HashMap<>();
+
+    public void buildHashMap(){
+        for (FinalOriginYYBModel line : cacheListOfyyb0818_13w){
+            apphashTocodeOrigins.put(line.apk.split("\\.")[0], line.idx + "," + line.codeOrigins);
+        }
     }
 
     /**

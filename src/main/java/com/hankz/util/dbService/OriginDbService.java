@@ -7,6 +7,7 @@ package com.hankz.util.dbService;
 import com.hankz.util.dbutil.DbHelper;
 import com.hankz.util.dbutil.ExtendOriginModel;
 import com.hankz.util.dbutil.OriginModel;
+import com.hankz.util.dbutil.gpTop540;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -35,7 +36,7 @@ public class OriginDbService {
         this.CACHE_SWITCH = cacheSwitch;
         dbHelper = new DbHelper(JDBC_DRIVER, dbUrl);
         if (cacheSwitch) loadAllData(false);
-        loadTempData();
+        //loadTempData();
     }
 
     private OriginDbService() {
@@ -105,6 +106,19 @@ public class OriginDbService {
                 ps.setString(3, originModel.lib);
                 ps.setString(4, originModel.webOrigins);
                 ps.setString(5, originModel.codeOrigins);
+                ps.addBatch();
+            }
+        });
+    }
+
+    public boolean insertgpTop540(List<gpTop540> list){
+        String sql = "insert into gp_top540_apkname (idx, hash, pkgname, appname) values (?, ?, ?, ?)";
+        return dbHelper.doBatchUpdate(sql, ps -> {
+            for (gpTop540 line : list){
+                ps.setInt(1, line.idx);
+                ps.setString(2, line.hash);
+                ps.setString(3, line.pkgname);
+                ps.setString(4, line.appname);
                 ps.addBatch();
             }
         });
