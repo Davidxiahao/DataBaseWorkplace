@@ -105,38 +105,6 @@ public class Handler {
     }
 
 
-    public static void main(String[] args){
-        dbHelper = new DbHelper(JDBC_DRIVER, dbUrl);
-        List<OriginModel> allResult = new ArrayList<>();
-        String sql = "SELECT * FROM origins_gp4w_2";
-        dbHelper.doQuery(sql, rs -> {
-            while (rs.next()){
-                if(!rs.getString("webOrigins").equals("")){
-                    allResult.add(new OriginModel(rs.getString("apk"),
-                            rs.getString("unit"),
-                            rs.getString("lib"),
-                            rs.getString("webOrigins"),
-                            rs.getString("codeOrigins"))
-                    );
-                }
-            }
-        });
 
-        Map<Record, Integer> map = recordInit(allResult);
 
-        mydb = new DbHelper(JDBC_DRIVER, mydbUrl);
-
-        for(Map.Entry<Record, Integer> entry: map.entrySet()){
-            if(entry.getValue() >= THRESHOLD){
-                System.out.println("api: " + entry.getKey().api + "; webOrigins: " + entry.getKey().webOrigins + "; declareClass: " + entry.getKey().declareClass + "; count: " + entry.getValue());
-                mydb.doUpdate("insert into lib_identifier (api, webOrigins, declareClass ,count) values (?, ?, ?, ?)", ps -> {
-                    ps.setString(1, entry.getKey().api);
-                    ps.setString(2, entry.getKey().webOrigins);
-                    ps.setString(3, entry.getKey().declareClass);
-                    ps.setInt(4, entry.getValue());
-                });
-            }
-        }
-
-    }
 }

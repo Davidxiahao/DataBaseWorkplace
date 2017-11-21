@@ -19,4 +19,7 @@ dependencies {
     // https://mvnrepository.com/artifact/net.sf.jwordnet/jwnl
     compile group: 'net.sf.jwordnet', name: 'jwnl', version: '1.4_rc3'
 
+    // https://mvnrepository.com/artifact/de.malkusch.whois-server-list/public-suffix-list
+    compile group: 'de.malkusch.whois-server-list', name: 'public-suffix-list', version: '2.2.0'
+
 }

@@ -3,13 +3,9 @@ package fdu.lab310.lib;
 import com.hankz.util.dbService.LibsDbService;
 import com.hankz.util.dbService.OriginDbService;
 import com.hankz.util.dbService.ResultDbService;
-import com.hankz.util.dbutil.OriginModel;
-import com.hankz.util.dbutil.ResultModel;
-import com.hankz.util.dbutil.gpTop540;
-import com.xiahao.lib.FileOperator;
-import com.xiahao.lib.FindMIX;
-import com.xiahao.lib.Url;
-import com.xiahao.lib.WordSegmentationUtil;
+import com.hankz.util.dbutil.*;
+import com.sun.javafx.collections.MappingChange;
+import com.xiahao.lib.*;
 import org.omg.Messaging.SYNC_WITH_TRANSPORT;
 
 import java.io.File;
@@ -21,30 +17,44 @@ import java.util.*;
  */
 public class Main {
     public static void main(String[] args) {
-        LibsDbService libsDbService = LibsDbService.getInstance();
-        libsDbService.loadAllDataFromyyb0818_13w();
-        libsDbService.buildHashMap();
-        List<String> input = FileOperator.readFileByCharacter("apps_gp_20170215_top540_apk_hash_list");
+        List<OriginModel> input = new ArrayList<>();
+        input.addAll(BuildWordList.getAllRecords());
+        Map<String, Integer> summap = StringIDF.calculateStringFrequency(BuildWordList.fisrtWordList(input));
+        Map<String, Double> map = StringIDF.calculateStringTFIDF(summap, input.size());
 
-        List<gpTop540> result = new ArrayList<>();
+        map.remove("");
+        for (String string : CreateWhiteList.whiteList){
+            map.remove(string);
+        }
 
-        for (String line : input){
-            if (libsDbService.apphashTocodeOrigins.containsKey(line)){
-                String value = libsDbService.apphashTocodeOrigins.get(line);
-                System.out.println(value);
-                gpTop540 newline = new gpTop540(Integer.parseInt(value.split(",")[0]),
-                                                line,
-                                                value.split("\\[PN]")[1].split(";")[0],
-                                                value.split("\\[AN]")[1].split(";")[0]);
-                System.out.println(newline.idx);
-                System.out.println(newline.hash);
-                System.out.println(newline.appname);
-                System.out.println(newline.pkgname);
-                result.add(newline);
+        List<WordsIDFModel> result = new ArrayList<>();
+        for (Map.Entry<String, Double> entry : map.entrySet()){
+            result.add(new WordsIDFModel(entry.getKey(), entry.getValue(), summap.get(entry.getKey())));
+        }
+
+        Iterator<WordsIDFModel> iterator = result.iterator();
+        while (iterator.hasNext()){
+            WordsIDFModel word = iterator.next();
+            if (word.sum < 10){
+                iterator.remove();
+            }
+            else if (CreateWhiteList.commonWords.contains(word.word)){
+                iterator.remove();
+            }
+            else if (word.word.contains(":") || isDigit(word.word)){
+                iterator.remove();
             }
         }
 
-        OriginDbService originDbService = OriginDbService.getInstance();
-        originDbService.insertgpTop540(result);
+
+
+        result.forEach(line -> System.out.println(line.word));
+
+        //ResultDbService.getInstance().insertIntoWordsIDF(result);
+        //ResultDbService.getInstance().insertIntoAfterRemove(result);
+    }
+
+    public static boolean isDigit(String strNum){
+        return strNum.matches("[0-9]{1,}");
     }
 }

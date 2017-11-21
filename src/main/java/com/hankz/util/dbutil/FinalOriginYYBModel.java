@@ -9,9 +9,10 @@ public class FinalOriginYYBModel {
     public final String codeOrigins;
     public final String webHelpInfo;
     public final String codeHelpInfo;
+    public String pkgname;
 
-    public FinalOriginYYBModel(int idx, String apk, String unit, String declaringClass, String webOrigins,
-                               String codeOrigins, String webHelpInfo, String codeHelpInfo){
+    public FinalOriginYYBModel(int idx, String apk, String unit, String declaringClass,
+                               String webOrigins, String codeOrigins, String webHelpInfo, String codeHelpInfo){
         this.idx = idx;
         this.apk = apk;
         this.unit = unit;

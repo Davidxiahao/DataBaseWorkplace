@@ -4,10 +4,7 @@ import com.hankz.util.dbutil.DbHelper;
 import com.hankz.util.dbutil.FinalOriginYYBModel;
 import com.hankz.util.dbutil.LibraryInfo;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.stream.Collectors;
 
 public class LibsDbService {
@@ -56,7 +53,7 @@ public class LibsDbService {
         });
     }
 
-    private List<FinalOriginYYBModel> cacheListOfyyb0818_13w;
+    public List<FinalOriginYYBModel> cacheListOfyyb0818_13w;
 
     public void loadAllDataFromyyb0818_13w(){
         cacheListOfyyb0818_13w = new ArrayList<>();
@@ -76,11 +73,51 @@ public class LibsDbService {
         });
     }
 
-    public Map<String, String> apphashTocodeOrigins = new HashMap<>();
+    public boolean insertFinalgpTop540(List<FinalOriginYYBModel> list){
+        String sql = "insert into final_origin_gp_top540 (idx, apk, pkgname, unit, declaringClass, webOrigins, " +
+                "codeOrigins, webHelpInfo, codeHelpInfo) values (?, ?, ?, ?, ?, ?, ?, ?, ?)";
+        return dbHelper.doBatchUpdate(sql, ps -> {
+            for (FinalOriginYYBModel line : list){
+                ps.setInt(1, line.idx);
+                ps.setString(2, line.apk);
+                ps.setString(3, line.pkgname);
+                ps.setString(4, line.unit);
+                ps.setString(5, line.declaringClass);
+                ps.setString(6, line.webOrigins);
+                ps.setString(7, line.codeOrigins);
+                ps.setString(8, line.webHelpInfo);
+                ps.setString(9, line.codeHelpInfo);
+                ps.addBatch();
+            }
+        });
+    }
+
+    public boolean updateFinalgpTop540(Map<Integer, String> map){
+        String sql = "update final_origin_gp_top540 set pkgname=? where idx=?";
+        return dbHelper.doBatchUpdate(sql, ps -> {
+            for (Map.Entry<Integer, String> entry : map.entrySet()){
+                ps.setString(1, entry.getValue());
+                ps.setInt(2, entry.getKey());
+                ps.addBatch();
+            }
+        });
+    }
+
+    public void deleteFinalgpTop540(List<FinalOriginYYBModel> list){
+        String sql = "delete from final_origin_yyb0818_13w where idx=?";
+        dbHelper.doBatchUpdate(sql, ps -> {
+            for (FinalOriginYYBModel line : list){
+                ps.setInt(1, line.idx);
+                ps.addBatch();
+            }
+        });
+    }
+
+    public Map<String, FinalOriginYYBModel> apphashTocodeOrigins = new HashMap<>();
 
     public void buildHashMap(){
         for (FinalOriginYYBModel line : cacheListOfyyb0818_13w){
-            apphashTocodeOrigins.put(line.apk.split("\\.")[0], line.idx + "," + line.codeOrigins);
+            apphashTocodeOrigins.put(line.apk.split("\\.")[0], line);
         }
     }
 
