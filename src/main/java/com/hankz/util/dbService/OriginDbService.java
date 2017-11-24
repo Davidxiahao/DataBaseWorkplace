@@ -45,7 +45,7 @@ public class OriginDbService {
     }
 
     public List<ggsearchModel> getAllDataFromggsearch(){
-        String sql = "select * from ggsearch";
+        String sql = "select * from ggsearch_full";
         List<ggsearchModel> result = new ArrayList<>();
         dbHelper.doQuery(sql, rs -> {
             while (rs.next()){
@@ -58,5 +58,62 @@ public class OriginDbService {
             }
         });
         return result;
+    }
+
+    public List<ggsearchModel> getAllDataFromggsearch_copy(){
+        String sql = "select * from ggsearch_copy";
+        List<ggsearchModel> result = new ArrayList<>();
+        dbHelper.doQuery(sql, rs -> {
+            while (rs.next()){
+                result.add(new ggsearchModel(rs.getInt("idx"),
+                        rs.getString("mainwords"),
+                        rs.getString("urls"),
+                        rs.getString("mainwordsnippet"),
+                        rs.getString("urlssnippet"),
+                        rs.getString("urlssnippetfull")));
+            }
+        });
+        return result;
+    }
+
+    public void insertIntoggsearch_copy(List<ggsearchModel> list){
+        String sql = "insert into ggsearch_copy (idx, mainwords, urls, mainwordsnippet, urlssnippet, urlssnippetfull, " +
+                "allmainwords, allurls) " +
+                "values (?, ?, ?, ?, ?, ?, ?, ?)";
+        dbHelper.doBatchUpdate(sql, ps -> {
+            for (ggsearchModel line : list){
+                ps.setInt(1, line.idx);
+                ps.setString(2, line.mainwords);
+                ps.setString(3, line.urls);
+                ps.setString(4, line.mainwordsnippet);
+                ps.setString(5, line.urlssnippet);
+                ps.setString(6, line.urlssnippetfull);
+                ps.setString(7, line.allmainwords);
+                ps.setString(8, line.allurls);
+                ps.addBatch();
+            }
+        });
+    }
+
+    public void updateggsearchOnSimilarity(List<ggsearchModel> list){
+        String sql = "update ggsearch set similarity=? where idx=?";
+        dbHelper.doBatchUpdate(sql, ps -> {
+            for (ggsearchModel line : list){
+                ps.setDouble(1, line.similarity);
+                ps.setInt(2, line.idx);
+                ps.addBatch();
+            }
+        });
+    }
+
+    public void updateggsearch_copyOnSimilarity(List<ggsearchModel> list){
+        String sql = "update ggsearch_copy set similarity=? where idx=?";
+        dbHelper.doBatchUpdate(sql, ps -> {
+            for (ggsearchModel line : list){
+                ps.setDouble(1, line.similarity);
+                ps.setInt(2, line.idx);
+                ps.addBatch();
+            }
+        });
     }
 }

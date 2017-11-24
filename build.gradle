@@ -22,4 +22,6 @@ dependencies {
     // https://mvnrepository.com/artifact/de.malkusch.whois-server-list/public-suffix-list
     compile group: 'de.malkusch.whois-server-list', name: 'public-suffix-list', version: '2.2.0'
 
+    // https://mvnrepository.com/artifact/info.debatty/java-string-similarity
+    compile group: 'info.debatty', name: 'java-string-similarity', version: '1.0.0'
 }
