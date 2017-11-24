@@ -15,6 +15,27 @@ public class DCInformation {
     private static PublicSuffixList suffixList = factory.build();
 
     public static void main(String[] args) {
+        Map<String, DCInformationStructure> result = getAllData();
+
+        List<DCInformationModel> resultList = new ArrayList<>();
+        for (Map.Entry<String, DCInformationStructure> entry : result.entrySet()){
+            DCInformationStructure value = entry.getValue();
+            DCInformationModel line = new DCInformationModel(
+                    value.DC,
+                    String.join(";", value.mainwords),
+                    value.total_frequence,
+                    value.different_APK_frequence,
+                    String.join(";", value.APKs),
+                    String.join(";", value.URLs)
+            );
+            resultList.add(line);
+        }
+
+        //ResultDbService.getInstance().createTableDCInformation();
+        ResultDbService.getInstance().insertDCInformation(resultList);
+    }
+
+    public static Map<String, DCInformationStructure> getAllData(){
         List<OriginModel> dataBase = new ArrayList<>();
         dataBase.addAll(OriginDbService.getInstance().getAllDataFromTable("last_origin_gp8w_meaningful"));
 
@@ -89,21 +110,6 @@ public class DCInformation {
             result.put(DC, info);
         }
 
-        List<DCInformationModel> resultList = new ArrayList<>();
-        for (Map.Entry<String, DCInformationStructure> entry : result.entrySet()){
-            DCInformationStructure value = entry.getValue();
-            DCInformationModel line = new DCInformationModel(
-                    value.DC,
-                    String.join(";", value.mainwords),
-                    value.total_frequence,
-                    value.different_APK_frequence,
-                    String.join(";", value.APKs),
-                    String.join(";", value.URLs)
-            );
-            resultList.add(line);
-        }
-
-        //ResultDbService.getInstance().createTableDCInformation();
-        ResultDbService.getInstance().insertDCInformation(resultList);
+        return result;
     }
 }
