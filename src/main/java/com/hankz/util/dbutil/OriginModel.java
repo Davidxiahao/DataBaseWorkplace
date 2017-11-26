@@ -1,13 +1,19 @@
 package com.hankz.util.dbutil;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class OriginModel {
     public final String apk;
     public final String unit;
-    public final String declaringClass;
+    public  String declaringClass;
     public final String webOrigins;
     public final String codeOrigins;
     public final String webHelpInfo;
     public final String codeHelpInfo;
+    public String keyWord;
+    public List<String> keywords;
+    public double similarity;
 
     public OriginModel(String apk, String unit, String declaringClass,
                        String webOrigins, String codeOrigins, String webHelpInfo,
@@ -19,6 +25,9 @@ public class OriginModel {
         this.codeOrigins = codeOrigins;
         this.webHelpInfo = webHelpInfo;
         this.codeHelpInfo = codeHelpInfo;
+        this.keyWord = "";
+        this.keywords = new ArrayList<>();
+        this.similarity = 0.0;
     }
 
     public String getApk() {

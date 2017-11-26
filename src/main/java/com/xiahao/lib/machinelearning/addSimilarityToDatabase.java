@@ -19,20 +19,20 @@ public class addSimilarityToDatabase {
             mainwordsList.addAll(countWords.getWordsVector(line.mainwordsnippet));
             urlList.addAll(countWords.getWordsVector(line.urlssnippet));
 
-            //line.similarity = makeVector.getSimilarity(mainwordsList, urlList);
+            line.similarity = makeVector.getSimilarity(mainwordsList, urlList);
 
-            if (line.mainwords.equals("www") && line.urls.equals("www.youtube.com")){
-                FileOperator.putLinesToFile("mainWords", String.join("\n", mainwordsList));
-                FileOperator.putLinesToFile("URLs", String.join("\n", urlList));
-                System.out.println(line.mainwords);
-                System.out.println(line.urls);
-                line.similarity = makeVector.getSimilarity(mainwordsList, urlList);
-                System.out.println(line.similarity);
-            }
+//            if (line.mainwords.equals("www") && line.urls.equals("www.youtube.com")){
+//                FileOperator.putLinesToFile("mainWords", String.join("\n", mainwordsList));
+//                FileOperator.putLinesToFile("URLs", String.join("\n", urlList));
+//                System.out.println(line.mainwords);
+//                System.out.println(line.urls);
+//                line.similarity = makeVector.getSimilarity(mainwordsList, urlList);
+//                System.out.println(line.similarity);
+//            }
 
             if (Double.isNaN(line.similarity)) line.similarity = -1.0;
         }
 
-        //OriginDbService.getInstance().updateggsearch_copyOnSimilarity(dataList);
+        OriginDbService.getInstance().updateggsearch_copyOnSimilarity(dataList);
     }
 }

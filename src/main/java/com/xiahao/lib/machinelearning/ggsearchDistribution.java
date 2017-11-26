@@ -15,12 +15,10 @@ public class ggsearchDistribution {
 
         List<ggsearchModel> result = new ArrayList<>();
         int idx = 0;
-        int sum = 0;
         for (ggsearchModel line : dataList){
             Map<String, String> mainwords = new HashMap<>();
             Map<String, String> urls = new HashMap<>();
             Map<String, String> urlsfull = new HashMap<>();
-            sum++;
 
             for (int i = 0; i < line.mainwords.split(";").length; i++){
                 if (i < line.mainwordsnippet.split("}@\\{").length) {
@@ -47,8 +45,6 @@ public class ggsearchDistribution {
                     result.add(temp);
                 }
             }
-
-            if (sum>=1500) break;
         }
 
         OriginDbService.getInstance().insertIntoggsearch_copy(result);

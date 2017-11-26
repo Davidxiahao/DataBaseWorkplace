@@ -82,6 +82,41 @@ public class ResultDbService {
         dbHelper.doUpdate(sql);
     }
 
+    public void createTablefinal_origin_gp8w_meaningful_copy(){
+        String sql =    "create table               final_origin_gp8w_meaningful_copy" +
+                        "(apk                        text," +
+                        "unit                       text," +
+                        "declaringClass             text," +
+                        "webOrigins                 text," +
+                        "keyword                    text,"+
+                        "similarity                 double," +
+                        "codeOrigins                text," +
+                        "webHelpInfo                text," +
+                        "codeHelpInfo               text)";
+
+        dbHelper.doUpdate(sql);
+    }
+
+    public void insertfinal_origin_gp8w_meaningful_copy(List<OriginModel> list){
+        String sql = "insert into final_origin_gp8w_meaningful_copy (apk, unit, declaringClass, webOrigins, " +
+                "keyword, similarity, codeOrigins, webHelpInfo, codeHelpInfo) values (?, ?, ?, ?, ?, ?, ?, ?, ?)";
+
+        dbHelper.doBatchUpdate(sql, ps -> {
+            for (OriginModel line : list){
+                ps.setString(1, line.apk);
+                ps.setString(2, line.unit);
+                ps.setString(3, line.declaringClass);
+                ps.setString(4, line.webOrigins);
+                ps.setString(5, line.keyWord);
+                ps.setDouble(6, line.similarity);
+                ps.setString(7, line.codeOrigins);
+                ps.setString(8, line.webHelpInfo);
+                ps.setString(9, line.codeHelpInfo);
+                ps.addBatch();
+            }
+        });
+    }
+
     public void insertDCInformationFeature(List<DCInformationFeatureModel> list){
         String sql = "insert into DCInformationFeature (DC, mainwords, numberOfWords, wordsSequence, wordsValueSequence, " +
                 "wordsLenSequence, total_frequence, different_APK_frequence, APKs, URLs) values (?, ?, ?, ?, ?, ?, ?, ?" +

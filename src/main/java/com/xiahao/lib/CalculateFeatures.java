@@ -45,19 +45,19 @@ public class CalculateFeatures {
         List<numpydataStructure> numpydataList = new ArrayList<>();
         List<String> writeIntoFiles = new ArrayList<>();
 
-        List<String> modelResult = new ArrayList<>();
-        modelResult.addAll(FileOperator.readFileByCharacter("test.data"));
-        List<Double> modelResultList = new ArrayList<>();
-        for (String line : modelResult){
-            for (String string : line.split(" ")){
-                if (!string.equals("")) {
-                    modelResultList.add(Double.parseDouble(string));
-                }
-            }
-        }
+//        List<String> modelResult = new ArrayList<>();
+//        modelResult.addAll(FileOperator.readFileByCharacter("test.data"));
+//        List<Double> modelResultList = new ArrayList<>();
+//        for (String line : modelResult){
+//            for (String string : line.split(" ")){
+//                if (!string.equals("")) {
+//                    modelResultList.add(Double.parseDouble(string));
+//                }
+//            }
+//        }
 
         List<DCInformationFeatureModel> resultList = new ArrayList<>();
-        Iterator<Double> iterator = modelResultList.iterator();
+        //Iterator<Double> iterator = modelResultList.iterator();
         for (DCInformationStructure line : result){
             List<String> wordsValueSequence = new ArrayList<>();
             line.wordsValueSequence.forEach(w -> wordsValueSequence.add(Double.toString(w)));
@@ -78,10 +78,14 @@ public class CalculateFeatures {
 
             //resultList.add(temp);
 
+//            if (iterator.hasNext()){
+//                    temp.model_choice = iterator.next().intValue();
+//            }
+            if (line.wordsLenSequence.size() > 4){
+                line.wordsLenSequence = line.wordsLenSequence.subList(0, 4);
+                line.wordsValueSequence = line.wordsValueSequence.subList(0, 4);
+            }
             if (line.wordsLenSequence.size() <= 4){
-                if (iterator.hasNext()){
-                    temp.model_choice = iterator.next().intValue();
-                }
                 numpydataStructure numpydata = new numpydataStructure();
                 numpydata.list.addAll(line.wordsValueSequence);
                 for (int i = 0; i < 4-line.wordsValueSequence.size(); i++){
@@ -107,9 +111,9 @@ public class CalculateFeatures {
         FileOperator.putLinesToFile("test_data.txt", String.join("\n", writeIntoFiles));
 
 
-        ResultDbService.getInstance().updateDCInformationFeatureOnChoice(resultList);
-        //ResultDbService.getInstance().createTableDCInformationFeature();
-        //ResultDbService.getInstance().insertDCInformationFeature(resultList);
+        //ResultDbService.getInstance().updateDCInformationFeatureOnChoice(resultList);
+//        ResultDbService.getInstance().createTableDCInformationFeature();
+//        ResultDbService.getInstance().insertDCInformationFeature(resultList);
     }
 
     public static int feature_one_numberOfWords(String mainwords){
@@ -142,14 +146,6 @@ public class CalculateFeatures {
                     words.put(string, info);
                 }
             }
-
-            for (String string : line.wordsSequence){
-                WordStructure info;
-                info = words.get(string);
-
-                info.wordsInEntry++;
-                words.put(string, info);
-            }
         }
 
         int numberOfEntry = list.size();
@@ -158,21 +154,21 @@ public class CalculateFeatures {
                 WordStructure info;
 
                 info = words.get(string);
+                int wordsInEntry = 0;
 
-                if (!info.calculated) {
-                    info.TF = calculateTF(info.wordsInEntry, line.wordsSequence.size());
-                    info.IDF = calculateIDF(numberOfEntry, info.entriesInDatabase);
-                    info.TF_IDF = info.TF * info.IDF;
-                    info.calculated = true;
+                for (String string1 : line.wordsSequence){
+                    if (string.equals(string1)){
+                        wordsInEntry++;
+                    }
                 }
 
-                words.put(string, info);
-            }
-        }
+                double TF = calculateTF(wordsInEntry, line.wordsSequence.size());
+                double IDF = calculateIDF(numberOfEntry, info.entriesInDatabase);
+                double TF_IDF = TF * IDF;
 
-        for (DCInformationStructure line : list){
-            for (String string : line.wordsSequence){
-                line.wordsValueSequence.add(words.get(string).TF_IDF);
+                words.put(string, info);
+
+                line.wordsValueSequence.add(TF_IDF);
             }
         }
 

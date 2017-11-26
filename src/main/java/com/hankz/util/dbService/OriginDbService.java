@@ -27,6 +27,20 @@ public class OriginDbService {
         dbHelper = new DbHelper(JDBC_DRIVER, dbUrl);
     }
 
+    public double getSimilarityFromggsearch_copy(String mainwords, String urls){
+        String sql = "select similarity from ggsearch_copy where mainwords=\""+mainwords+"\" and urls=\""+urls+"\"";
+        List<Double> result = new ArrayList<>();
+
+        dbHelper.doQuery(sql, rs -> {
+            while (rs.next()){
+                result.add(new Double(rs.getDouble("similarity")));
+            }
+        });
+
+        if (!result.isEmpty()) return result.get(0);
+        else return 0.0;
+    }
+
     public List<OriginModel> getAllDataFromTable(String table){
             String sql = "select * from " + table;
             List<OriginModel> result = new ArrayList<>();
@@ -45,7 +59,7 @@ public class OriginDbService {
     }
 
     public List<ggsearchModel> getAllDataFromggsearch(){
-        String sql = "select * from ggsearch_full";
+        String sql = "select * from ggsearch_full3";
         List<ggsearchModel> result = new ArrayList<>();
         dbHelper.doQuery(sql, rs -> {
             while (rs.next()){
@@ -61,23 +75,25 @@ public class OriginDbService {
     }
 
     public List<ggsearchModel> getAllDataFromggsearch_copy(){
-        String sql = "select * from ggsearch_copy";
+        String sql = "select * from ggsearch_copy2";
         List<ggsearchModel> result = new ArrayList<>();
         dbHelper.doQuery(sql, rs -> {
             while (rs.next()){
-                result.add(new ggsearchModel(rs.getInt("idx"),
+                ggsearchModel temp = new ggsearchModel(rs.getInt("idx"),
                         rs.getString("mainwords"),
                         rs.getString("urls"),
                         rs.getString("mainwordsnippet"),
                         rs.getString("urlssnippet"),
-                        rs.getString("urlssnippetfull")));
+                        rs.getString("urlssnippetfull"));
+                temp.similarity = rs.getDouble("similarity");
+                result.add(temp);
             }
         });
         return result;
     }
 
     public void insertIntoggsearch_copy(List<ggsearchModel> list){
-        String sql = "insert into ggsearch_copy (idx, mainwords, urls, mainwordsnippet, urlssnippet, urlssnippetfull, " +
+        String sql = "insert into ggsearch_copy2 (idx, mainwords, urls, mainwordsnippet, urlssnippet, urlssnippetfull, " +
                 "allmainwords, allurls) " +
                 "values (?, ?, ?, ?, ?, ?, ?, ?)";
         dbHelper.doBatchUpdate(sql, ps -> {
@@ -107,7 +123,7 @@ public class OriginDbService {
     }
 
     public void updateggsearch_copyOnSimilarity(List<ggsearchModel> list){
-        String sql = "update ggsearch_copy set similarity=? where idx=?";
+        String sql = "update ggsearch_copy2 set similarity=? where idx=?";
         dbHelper.doBatchUpdate(sql, ps -> {
             for (ggsearchModel line : list){
                 ps.setDouble(1, line.similarity);

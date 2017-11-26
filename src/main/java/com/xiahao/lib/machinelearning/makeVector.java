@@ -32,7 +32,7 @@ public class makeVector {
         for (Map.Entry<String, Integer> entry : vector1.entrySet()){
             list1.add(entry.getValue());
             list2.add(vector2.get(entry.getKey()));
-            System.out.println((list1.size()-1)+" "+entry.getKey()+" "+entry.getValue()+" "+vector2.get(entry.getKey()));
+            //System.out.println((list1.size()-1)+" "+entry.getKey()+" "+entry.getValue()+" "+vector2.get(entry.getKey()));
         }
 
         int up = 0;
@@ -40,14 +40,14 @@ public class makeVector {
         int value2 = 0;
         for (int i = 0; i < list1.size(); i++){
             up = up + list1.get(i) * list2.get(i);
-            System.out.println(up + "= " + i + " " + list1.get(i) + " " + list2.get(i));
+            //System.out.println(up + "= " + i + " " + list1.get(i) + " " + list2.get(i));
             value1 = value1 + list1.get(i) * list1.get(i);
             value2 = value2 + list2.get(i) * list2.get(i);
         }
 
-        System.out.println(up);
-        System.out.println(value1);
-        System.out.println(value2);
+        //System.out.println(up);
+        //System.out.println(value1);
+        //System.out.println(value2);
 
         if (value1<20) value1=20;
         if (value2<20) value2=20;
