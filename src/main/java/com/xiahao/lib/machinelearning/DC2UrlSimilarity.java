@@ -27,23 +27,28 @@ public class DC2UrlSimilarity {
 
         for (OriginModel line : list){
             //line.similarity = map.getOrDefault(line.keyWord+line.webOrigins, -1.0);
+            double min = 2.0;
             List<String> declaringClassList = new ArrayList<>();
             declaringClassList.addAll(Arrays.asList(line.declaringClass.split("\\.")));
-            declaringClassList = declaringClassList.subList(0, declaringClassList.size()-1);
+            declaringClassList = declaringClassList.subList(0, declaringClassList.size() - 1);
             line.declaringClass = String.join(".", declaringClassList);
-            double max = -1.0;
-            for (String string : line.keywords){
-                if (max < map.getOrDefault(string+line.webOrigins, -1.0)){
-                    max = map.getOrDefault(string+line.webOrigins, -1.0);
-                    line.keyWord = string;
+            for (String urlString : line.webOrigins.split(";")) {
+                double max = -1.0;
+                for (String string : line.keywords) {
+                    if (max < map.getOrDefault(string + urlString, -1.0)) {
+                        max = map.getOrDefault(string + urlString, -1.0);
+                        line.keyWord = string;
+                    }
                 }
-            }
 
-            line.similarity = max;
+                if (min > max) min = max;
+            }
+            line.similarity = min;
         }
 
-        ResultDbService.getInstance().createTablefinal_origin_gp8w_meaningful_copy();
-        ResultDbService.getInstance().insertfinal_origin_gp8w_meaningful_copy(list);
+        //ResultDbService.getInstance().createTablefinal_origin_gp8w_meaningful_copy();
+        //ResultDbService.getInstance().insertfinal_origin_gp8w_meaningful_copy(list);
+        OriginDbService.getInstance().insertfinal_origin_gp8w_meaningful_copy(list);
     }
 
     public static List<OriginModel> getAllData(){

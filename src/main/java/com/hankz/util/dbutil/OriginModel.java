@@ -4,6 +4,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class OriginModel {
+    public int idx;
+    public int libNum;
     public final String apk;
     public final String unit;
     public  String declaringClass;

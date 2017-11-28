@@ -83,8 +83,10 @@ public class ResultDbService {
     }
 
     public void createTablefinal_origin_gp8w_meaningful_copy(){
-        String sql =    "create table               final_origin_gp8w_meaningful_copy" +
-                        "(apk                        text," +
+        String sql =    "create table               last_origin_gp8w_meaningful_copy" +
+                        "(idx                       integer," +
+                        "libNum                     integer," +
+                        "apk                        text," +
                         "unit                       text," +
                         "declaringClass             text," +
                         "webOrigins                 text," +
@@ -98,20 +100,23 @@ public class ResultDbService {
     }
 
     public void insertfinal_origin_gp8w_meaningful_copy(List<OriginModel> list){
-        String sql = "insert into final_origin_gp8w_meaningful_copy (apk, unit, declaringClass, webOrigins, " +
-                "keyword, similarity, codeOrigins, webHelpInfo, codeHelpInfo) values (?, ?, ?, ?, ?, ?, ?, ?, ?)";
+        String sql = "insert into last_origin_gp8w_meaningful_copy (idx, libNum, apk, unit, declaringClass, " +
+                "webOrigins, keyword, similarity, codeOrigins, webHelpInfo, codeHelpInfo) values " +
+                "(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
 
         dbHelper.doBatchUpdate(sql, ps -> {
             for (OriginModel line : list){
-                ps.setString(1, line.apk);
-                ps.setString(2, line.unit);
-                ps.setString(3, line.declaringClass);
-                ps.setString(4, line.webOrigins);
-                ps.setString(5, line.keyWord);
-                ps.setDouble(6, line.similarity);
-                ps.setString(7, line.codeOrigins);
-                ps.setString(8, line.webHelpInfo);
-                ps.setString(9, line.codeHelpInfo);
+                ps.setInt(1, line.idx);
+                ps.setInt(2, line.libNum);
+                ps.setString(3, line.apk);
+                ps.setString(4, line.unit);
+                ps.setString(5, line.declaringClass);
+                ps.setString(6, line.webOrigins);
+                ps.setString(7, line.keyWord);
+                ps.setDouble(8, line.similarity);
+                ps.setString(9, line.codeOrigins);
+                ps.setString(10, line.webHelpInfo);
+                ps.setString(11, line.codeHelpInfo);
                 ps.addBatch();
             }
         });
@@ -233,5 +238,25 @@ public class ResultDbService {
                 ps.addBatch();
             }
         });
+    }
+
+    public List<OriginModel> getAllDataFromTable(String table){
+        String sql = "select * from " + table;
+        List<OriginModel> result = new ArrayList<>();
+        dbHelper.doQuery(sql, rs -> {
+            while (rs.next()) {
+                OriginModel temp = new OriginModel(rs.getString("apk"),
+                        rs.getString("unit"),
+                        rs.getString("declaringClass"),
+                        rs.getString("webOrigins"),
+                        rs.getString("codeOrigins"),
+                        rs.getString("webHelpInfo"),
+                        rs.getString("codeHelpInfo"));
+                temp.idx = rs.getInt("idx");
+                temp.libNum = rs.getInt("libNum");
+                result.add(temp);
+            }
+        });
+        return result;
     }
 }

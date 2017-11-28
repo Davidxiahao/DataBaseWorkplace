@@ -46,13 +46,16 @@ public class OriginDbService {
             List<OriginModel> result = new ArrayList<>();
             dbHelper.doQuery(sql, rs -> {
                 while (rs.next()) {
-                    result.add(new OriginModel(rs.getString("apk"),
+                    OriginModel temp = new OriginModel(rs.getString("apk"),
                             rs.getString("unit"),
                             rs.getString("declaringClass"),
                             rs.getString("webOrigins"),
                             rs.getString("codeOrigins"),
                             rs.getString("webHelpInfo"),
-                            rs.getString("codeHelpInfo")));
+                            rs.getString("codeHelpInfo"));
+                    temp.idx = rs.getInt("idx");
+                    temp.libNum = rs.getInt("libNum");
+                    result.add(temp);
                 }
             });
             return result;
@@ -128,6 +131,29 @@ public class OriginDbService {
             for (ggsearchModel line : list){
                 ps.setDouble(1, line.similarity);
                 ps.setInt(2, line.idx);
+                ps.addBatch();
+            }
+        });
+    }
+
+    public void insertfinal_origin_gp8w_meaningful_copy(List<OriginModel> list){
+        String sql = "insert into last_origin_gp8w_meaningful_copy (idx, libNum, apk, unit, declaringClass, " +
+                "webOrigins, keyword, similarity, codeOrigins, webHelpInfo, codeHelpInfo) values " +
+                "(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+
+        dbHelper.doBatchUpdate(sql, ps -> {
+            for (OriginModel line : list){
+                ps.setInt(1, line.idx);
+                ps.setInt(2, line.libNum);
+                ps.setString(3, line.apk);
+                ps.setString(4, line.unit);
+                ps.setString(5, line.declaringClass);
+                ps.setString(6, line.webOrigins);
+                ps.setString(7, line.keyWord);
+                ps.setDouble(8, line.similarity);
+                ps.setString(9, line.codeOrigins);
+                ps.setString(10, line.webHelpInfo);
+                ps.setString(11, line.codeHelpInfo);
                 ps.addBatch();
             }
         });
