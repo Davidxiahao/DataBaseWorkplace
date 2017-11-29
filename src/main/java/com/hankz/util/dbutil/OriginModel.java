@@ -16,6 +16,7 @@ public class OriginModel {
     public String keyWord;
     public List<String> keywords;
     public double similarity;
+    public int isXSOP;
 
     public OriginModel(String apk, String unit, String declaringClass,
                        String webOrigins, String codeOrigins, String webHelpInfo,

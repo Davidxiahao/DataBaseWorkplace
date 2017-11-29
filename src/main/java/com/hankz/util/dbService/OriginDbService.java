@@ -1,9 +1,5 @@
 package com.hankz.util.dbService;
 
-
-
-
-
 import com.hankz.util.dbutil.*;
 
 import java.util.ArrayList;
@@ -55,10 +51,33 @@ public class OriginDbService {
                             rs.getString("codeHelpInfo"));
                     temp.idx = rs.getInt("idx");
                     temp.libNum = rs.getInt("libNum");
+                    temp.similarity = rs.getDouble("similarity");
+                    temp.keyWord = rs.getString("keyword");
                     result.add(temp);
                 }
             });
             return result;
+    }
+
+    public List<OriginModel> getAllDataFromLastParsedOrigin(){
+        String sql = "select * from last_parsed_origin";
+        List<OriginModel> result = new ArrayList<>();
+        dbHelper.doQuery(sql, rs -> {
+            while (rs.next()){
+                OriginModel temp = new OriginModel(rs.getString("apk"),
+                        rs.getString("unit"),
+                        "",
+                        rs.getString("webOrigins"),
+                        rs.getString("codeOrigins"),
+                        rs.getString("webHelpInfo"),
+                        rs.getString("codeHelpInfo"));
+                temp.idx = rs.getInt("idx");
+                temp.isXSOP = rs.getInt("isXSOP");
+                result.add(temp);
+            }
+        });
+
+        return result;
     }
 
     public List<ggsearchModel> getAllDataFromggsearch(){
@@ -109,6 +128,23 @@ public class OriginDbService {
                 ps.setString(6, line.urlssnippetfull);
                 ps.setString(7, line.allmainwords);
                 ps.setString(8, line.allurls);
+                ps.addBatch();
+            }
+        });
+    }
+
+    public void insertIntoggsearch_wait(List<ggsearchModel> list){
+        String sql = "insert into ggsearch_wait (idx, mainwords, urls, mainwordsnippet, urlssnippet, urlssnippetfull, " +
+                "similarity) values (?, ?, ?, ?, ?, ?, ?)";
+        dbHelper.doBatchUpdate(sql, ps -> {
+            for (ggsearchModel line : list){
+                ps.setInt(1, line.idx);
+                ps.setString(2, line.mainwords);
+                ps.setString(3, line.urls);
+                ps.setString(4, line.mainwordsnippet);
+                ps.setString(5, line.urlssnippet);
+                ps.setString(6, line.urlssnippetfull);
+                ps.setDouble(7, line.similarity);
                 ps.addBatch();
             }
         });
