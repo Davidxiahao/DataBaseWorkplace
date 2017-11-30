@@ -51,12 +51,29 @@ public class OriginDbService {
                             rs.getString("codeHelpInfo"));
                     temp.idx = rs.getInt("idx");
                     temp.libNum = rs.getInt("libNum");
-                    temp.similarity = rs.getDouble("similarity");
-                    temp.keyWord = rs.getString("keyword");
+                    //temp.similarity = rs.getDouble("similarity");
+                    //temp.keyWord = rs.getString("keyword");
                     result.add(temp);
                 }
             });
             return result;
+    }
+
+    public List<LibraryHashModel> getAllDataFromLastLibraryGp8wHashCopy3(){
+        String sql = "select * from last_library_gp8w_hash_copy3";
+        List<LibraryHashModel> result = new ArrayList<>();
+        dbHelper.doQuery(sql, rs -> {
+            while (rs.next()){
+                LibraryHashModel temp = new LibraryHashModel(rs.getInt("idx"),
+                        rs.getString("api"),
+                        rs.getString("webOrigins"),
+                        rs.getString("declareClass"),
+                        rs.getInt("count"));
+                result.add(temp);
+            }
+        });
+
+        return result;
     }
 
     public List<OriginModel> getAllDataFromLastParsedOrigin(){
