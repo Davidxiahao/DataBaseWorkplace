@@ -19,7 +19,7 @@ public class newXSOP2old {
 
         int sum = 0;
         for (OriginModel line : newXSOPList){
-            if (line.similarity<0.3 && oldMap.containsKey(line.webOrigins+line.codeOrigins) &&
+            if (line.similarity<0.4 && oldMap.containsKey(line.webOrigins+line.codeOrigins) &&
                     oldMap.get(line.webOrigins+line.codeOrigins).isXSOP==0){
                 System.out.println(line.idx+" "+line.declaringClass+" "+line.webOrigins+" "+line.keyWord+" "+line.similarity);
                 sum++;

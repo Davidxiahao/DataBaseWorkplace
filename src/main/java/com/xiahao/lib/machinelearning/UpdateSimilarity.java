@@ -31,11 +31,9 @@ public class UpdateSimilarity {
                 }
 
                 if (urlMap.containsKey(line.urls)){
-                    List<String> mainwordsList = new ArrayList<>();
-                    List<String> urlMapList = new ArrayList<>();
 
-                    mainwordsList.addAll(countWords.getWordsVector(line.mainwordsnippet));
-                    urlMapList.addAll(countWords.getWordsVector(urlMap.get(line.urls)));
+                    List<String> mainwordsList = new ArrayList<>(countWords.getWordsVector(line.mainwordsnippet));
+                    List<String> urlMapList = new ArrayList<>(countWords.getWordsVector(urlMap.get(line.urls)));
 
                     double similarity = makeVector.getSimilarity(mainwordsList, urlMapList);
                     if (Double.isNaN(similarity)) similarity = -1.0;
@@ -51,7 +49,7 @@ public class UpdateSimilarity {
             }
         }
 
-        OriginDbService.getInstance().updateggsearch_copyOnSimilarity(resultList);
+        //OriginDbService.getInstance().updateggsearch_copyOnSimilarity(resultList);
         System.out.println(resultList.size());
     }
 }
