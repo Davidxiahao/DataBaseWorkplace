@@ -1,6 +1,7 @@
 package com.hankz.util.dbService;
 
 import com.hankz.util.dbutil.DbHelper;
+import com.hankz.util.dbutil.OriginModel;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -11,15 +12,28 @@ import java.util.List;
  */
 public class SampleDbService {
     private final DbHelper dbHelper;
-    static final String dbUrl = "jdbc:mysql://10.141.209.138:6603/originchecker?user=originchecker&password=originchecker";
+    static final String dbUrl = "jdbc:mysql://10.141.209.138:6603/xsop2?user=originchecker&password=originchecker";
     static final String JDBC_DRIVER = "com.mysql.cj.jdbc.Driver";
 
-    public SampleDbService() {
+    private static SampleDbService ourInstance = new SampleDbService();
+
+    public static SampleDbService getInstance(){return ourInstance;}
+
+    private SampleDbService() {
         dbHelper = new DbHelper(JDBC_DRIVER, dbUrl);
     }
 
-    public SampleDbService(String dbUrl) {
-        dbHelper = new DbHelper(JDBC_DRIVER, dbUrl);
+    public void updatelast_origin_gp8w_meaningful(List<OriginModel> list){
+        String sql = "update last_origin_gp8w_meaningful set keyword=?, similarity=?, isXSOP=? where idx=?";
+        dbHelper.doBatchUpdate(sql, ps -> {
+            for (OriginModel line : list){
+                ps.setString(1, line.keyWord);
+                ps.setDouble(2, line.similarity);
+                ps.setInt(3, line.isXSOP);
+                ps.setInt(4, line.idx);
+                ps.addBatch();
+            }
+        });
     }
 
     /**

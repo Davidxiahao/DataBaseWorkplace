@@ -19,9 +19,7 @@ public class AddPNandAN {
         Set<String> wordlist = new HashSet<>();
         for (OriginModel line : list){
             if (!line.keywords.isEmpty()){
-                for (String string : line.keywords){
-                    wordlist.add(string);
-                }
+                wordlist.addAll(line.keywords);
             }
         }
 
@@ -31,19 +29,22 @@ public class AddPNandAN {
             haveSearched.add(line.mainwords);
         }
 
+        List<ggsearchModel> resultList = new ArrayList<>();
         int sum = 0;
         for (String string : wordlist){
-            if (!haveSearched.contains(string)){
-                System.out.println(string);
+            if (string.length()>=3 && !haveSearched.contains(string)){
                 sum++;
+                ggsearchModel temp = new ggsearchModel(sum, string, "", "", "", "");
+                resultList.add(temp);
             }
         }
         System.out.println(sum);
+        OriginDbService.getInstance().insertIntoggsearch_wait(resultList);
     }
 
     public static List<OriginModel> getAllData(){
         List<OriginModel> dataBase = new ArrayList<>();
-        dataBase.addAll(OriginDbService.getInstance().getAllDataFromTable("last_origin_gp8w_meaningful_copy3"));
+        dataBase.addAll(OriginDbService.getInstance().getAllDataFromTable("last_origin_gp8w_meaningful"));
 
         for (OriginModel line : dataBase){
             List<String> words = new ArrayList<>();

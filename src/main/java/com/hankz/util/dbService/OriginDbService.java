@@ -51,8 +51,8 @@ public class OriginDbService {
                             rs.getString("codeHelpInfo"));
                     temp.idx = rs.getInt("idx");
                     temp.libNum = rs.getInt("libNum");
-                    //temp.similarity = rs.getDouble("similarity");
-                    //temp.keyWord = rs.getString("keyword");
+                    temp.similarity = rs.getDouble("similarity");
+                    temp.keyWord = rs.getString("keyword");
                     result.add(temp);
                 }
             });
@@ -60,7 +60,7 @@ public class OriginDbService {
     }
 
     public List<LibraryHashModel> getAllDataFromLastLibraryGp8wHashCopy3(){
-        String sql = "select * from last_library_gp8w_hash_copy3";
+        String sql = "select * from last_library_gp8w_hash";
         List<LibraryHashModel> result = new ArrayList<>();
         dbHelper.doQuery(sql, rs -> {
             while (rs.next()){
@@ -98,7 +98,7 @@ public class OriginDbService {
     }
 
     public List<ggsearchModel> getAllDataFromggsearch(){
-        String sql = "select * from ggsearch_full3";
+        String sql = "select * from ggsearch_wait";
         List<ggsearchModel> result = new ArrayList<>();
         dbHelper.doQuery(sql, rs -> {
             while (rs.next()){
@@ -152,6 +152,23 @@ public class OriginDbService {
 
     public void insertIntoggsearch_wait(List<ggsearchModel> list){
         String sql = "insert into ggsearch_wait (idx, mainwords, urls, mainwordsnippet, urlssnippet, urlssnippetfull, " +
+                "similarity) values (?, ?, ?, ?, ?, ?, ?)";
+        dbHelper.doBatchUpdate(sql, ps -> {
+            for (ggsearchModel line : list){
+                ps.setInt(1, line.idx);
+                ps.setString(2, line.mainwords);
+                ps.setString(3, line.urls);
+                ps.setString(4, line.mainwordsnippet);
+                ps.setString(5, line.urlssnippet);
+                ps.setString(6, line.urlssnippetfull);
+                ps.setDouble(7, line.similarity);
+                ps.addBatch();
+            }
+        });
+    }
+
+    public void insertIntoggsearch_full3(List<ggsearchModel> list){
+        String sql = "insert into ggsearch_full3 (idx, mainwords, urls, mainwordsnippet, urlssnippet, urlssnippetfull, " +
                 "similarity) values (?, ?, ?, ?, ?, ?, ?)";
         dbHelper.doBatchUpdate(sql, ps -> {
             for (ggsearchModel line : list){
