@@ -32,11 +32,17 @@ public class DC2UrlSimilarity {
             declaringClassList.addAll(Arrays.asList(line.declaringClass.split("\\.")));
             declaringClassList = declaringClassList.subList(0, declaringClassList.size() - 1);
             line.declaringClass = String.join(".", declaringClassList);
+
+            //use the first three keywords
+            if (line.keywords.size()>3) {
+                line.keywords = line.keywords.subList(line.keywords.size()-3, line.keywords.size());
+            }
+
             for (String urlString : line.webOrigins.split(";")) {
                 double max = -2.0;
                 boolean haveSearchAll = true;
                 for (String string : line.keywords) {
-                    if (!map.containsKey(string + urlString)){
+                    if (map.getOrDefault(string + urlString, -1.0)==-1.0){
                         haveSearchAll = false;
                     }
                     if (max < map.getOrDefault(string + urlString, -1.0)) {

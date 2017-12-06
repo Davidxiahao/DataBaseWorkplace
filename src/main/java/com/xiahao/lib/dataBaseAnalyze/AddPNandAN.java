@@ -42,18 +42,15 @@ public class AddPNandAN {
         OriginDbService.getInstance().insertIntoggsearch_wait(resultList);
     }
 
-    public static List<OriginModel> getAllData(){
-        List<OriginModel> dataBase = new ArrayList<>();
-        dataBase.addAll(OriginDbService.getInstance().getAllDataFromTable("last_origin_gp8w_meaningful"));
+    private static List<OriginModel> getAllData(){
+        List<OriginModel> dataBase = new ArrayList<>(OriginDbService.getInstance().getAllDataFromTable("last_origin_gp8w_meaningful"));
 
         for (OriginModel line : dataBase){
-            List<String> words = new ArrayList<>();
-            words.addAll(Arrays.asList(line.declaringClass.split("\\.")));
+            List<String> words = new ArrayList<>(Arrays.asList(line.declaringClass.split("\\.")));
 
 
             line.declaringClass = cutTheLast(words);
-            List<String> apkWords = new ArrayList<>();
-            apkWords.addAll(Arrays.asList(line.apk.split("\\.")));
+            List<String> apkWords = new ArrayList<>(Arrays.asList(line.apk.split("\\.")));
             line.ApkName = cutTheLast(apkWords);
             if (line.codeOrigins.contains("[PN]")){
                 String packageName = line.codeOrigins.split("\\[PN]")[1].split(";")[0];
@@ -62,8 +59,7 @@ public class AddPNandAN {
                 }
                 else {
                     line.PackageName = packageName;
-                    List<String> pnWords = new ArrayList<>();
-                    pnWords.addAll(Arrays.asList(line.PackageName.split("\\.")));
+                    List<String> pnWords = new ArrayList<>(Arrays.asList(line.PackageName.split("\\.")));
                     removePublicSuffix(line, pnWords);
                 }
             }

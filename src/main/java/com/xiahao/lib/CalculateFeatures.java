@@ -1,5 +1,6 @@
 package com.xiahao.lib;
 
+import com.hankz.util.dbService.OriginDbService;
 import com.hankz.util.dbService.ResultDbService;
 import com.hankz.util.dbutil.DCInformationFeatureModel;
 import com.hankz.util.dbutil.DCInformationModel;
@@ -8,8 +9,7 @@ import java.util.*;
 
 public class CalculateFeatures {
     public static void main(String[] args) {
-        List<DCInformationModel> dataBase = new ArrayList<>();
-        dataBase.addAll(ResultDbService.getInstance().getAllDCInformationData("DCInformation"));
+        List<DCInformationModel> dataBase = new ArrayList<>(OriginDbService.getInstance().getAllDCInformationData("DCInformation"));
 
         List<DCInformationStructure> originalData = new ArrayList<>();
         for (DCInformationModel line : dataBase){
@@ -17,9 +17,7 @@ public class CalculateFeatures {
             temp.total_frequence = line.total_frequence;
             temp.different_APK_frequence = line.different_APK_frequence;
 
-            for (String string : line.mainwords.split(";")){
-                temp.mainwords.add(string);
-            }
+            temp.mainwords.addAll(Arrays.asList(line.mainwords.split(";")));
 
             for (String string : line.DC.split("\\.")){
                 if (temp.mainwords.contains(string)){
@@ -39,8 +37,7 @@ public class CalculateFeatures {
             //APKs and URLs will not be used temporally
         }
 
-        List<DCInformationStructure> result = new ArrayList<>();
-        result.addAll(feature_two_valueOfWords(originalData));
+        List<DCInformationStructure> result = new ArrayList<>(feature_two_valueOfWords(originalData));
 
         List<numpydataStructure> numpydataList = new ArrayList<>();
         List<String> writeIntoFiles = new ArrayList<>();
@@ -81,18 +78,18 @@ public class CalculateFeatures {
 //            if (iterator.hasNext()){
 //                    temp.model_choice = iterator.next().intValue();
 //            }
-            if (line.wordsLenSequence.size() > 4){
-                line.wordsLenSequence = line.wordsLenSequence.subList(0, 4);
-                line.wordsValueSequence = line.wordsValueSequence.subList(0, 4);
+            if (line.wordsLenSequence.size() > 3){
+                line.wordsLenSequence = line.wordsLenSequence.subList(0, 3);
+                line.wordsValueSequence = line.wordsValueSequence.subList(0, 3);
             }
-            if (line.wordsLenSequence.size() <= 4){
+            if (line.wordsLenSequence.size() <= 3){
                 numpydataStructure numpydata = new numpydataStructure();
                 numpydata.list.addAll(line.wordsValueSequence);
-                for (int i = 0; i < 4-line.wordsValueSequence.size(); i++){
+                for (int i = 0; i < 3-line.wordsValueSequence.size(); i++){
                     numpydata.list.add(0.0);
                 }
                 line.wordsLenSequence.forEach(w -> numpydata.list.add(new Double(w)));
-                for (int i = 0; i < 4-line.wordsLenSequence.size(); i++){
+                for (int i = 0; i < 3-line.wordsLenSequence.size(); i++){
                     numpydata.list.add(0.0);
                 }
 
@@ -101,6 +98,7 @@ public class CalculateFeatures {
                     string = string + " " + value.toString();
                 }
                 string = string.substring(1,string.length());
+                //string = line.DC + " "  + string;
                 numpydataList.add(numpydata);
                 writeIntoFiles.add(string);
             }
@@ -110,13 +108,12 @@ public class CalculateFeatures {
 
         FileOperator.putLinesToFile("test_data.txt", String.join("\n", writeIntoFiles));
 
-
-        //ResultDbService.getInstance().updateDCInformationFeatureOnChoice(resultList);
+//        ResultDbService.getInstance().updateDCInformationFeatureOnChoice(resultList);
 //        ResultDbService.getInstance().createTableDCInformationFeature();
 //        ResultDbService.getInstance().insertDCInformationFeature(resultList);
     }
 
-    public static int feature_one_numberOfWords(String mainwords){
+    private static int feature_one_numberOfWords(String mainwords){
         int result = 0;
         for (String string : mainwords.split(";")){
             if (!string.equals("")){
@@ -127,8 +124,7 @@ public class CalculateFeatures {
         return result;
     }
 
-    public static List<DCInformationStructure> feature_two_valueOfWords(List<DCInformationStructure> list){
-        List<DCInformationStructure> result = new ArrayList<>();
+    private static List<DCInformationStructure> feature_two_valueOfWords(List<DCInformationStructure> list){
 
         Map<String, WordStructure> words = new HashMap<>();
         for (DCInformationStructure line : list){
@@ -172,9 +168,7 @@ public class CalculateFeatures {
             }
         }
 
-        result.addAll(list);
-
-        return result;
+        return list;
     }
 
     public static double calculateTF(int x, int y){
@@ -185,7 +179,7 @@ public class CalculateFeatures {
         return Math.log10((double)x/(double)y);
     }
 
-    public static List<Integer> feature_three_lenOfWords(List<String> wordsSequence){
+    private static List<Integer> feature_three_lenOfWords(List<String> wordsSequence){
         List<Integer> result = new ArrayList<>();
 
         for (String string : wordsSequence){

@@ -10,8 +10,8 @@ public class singleTest {
         List<String> list1 = new ArrayList<>();
         List<String> list2 = new ArrayList<>();
 
-        list1.addAll(FileOperator.readFileByCharacter("C:\\Users\\xiahao\\Desktop\\wsquareMainWords"));
-        list2.addAll(FileOperator.readFileByCharacter("C:\\Users\\xiahao\\Desktop\\wsquareURL"));
+        list1.addAll(FileOperator.readFileByCharacter("C:\\Users\\xiahao\\Desktop\\MainWords"));
+        list2.addAll(FileOperator.readFileByCharacter("C:\\Users\\xiahao\\Desktop\\URL"));
 
         List<String> mainwordsList = new ArrayList<>();
         List<String> urlList = new ArrayList<>();

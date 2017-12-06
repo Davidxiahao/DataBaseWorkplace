@@ -13,16 +13,13 @@ public class addSimilarityToDatabase {
         dataList.addAll(OriginDbService.getInstance().getAllDataFromggsearch_copy());
 
         for (ggsearchModel line : dataList){
-            if (line.mainwordsnippet.isEmpty() || line.urlssnippet.isEmpty()){
-                line.similarity = -1.0;
-            }
-            //List<String> mainwordsList = new ArrayList<>();
-            //List<String> urlList = new ArrayList<>();
+            List<String> mainwordsList = new ArrayList<>();
+            List<String> urlList = new ArrayList<>();
 
-            //mainwordsList.addAll(countWords.getWordsVector(line.mainwordsnippet));
-            //urlList.addAll(countWords.getWordsVector(line.urlssnippet));
+            mainwordsList.addAll(countWords.getWordsVector(line.mainwordsnippet));
+            urlList.addAll(countWords.getWordsVector(line.urlssnippet));
 
-            //line.similarity = makeVector.getSimilarity(mainwordsList, urlList);
+            line.similarity = makeVector.getSimilarity(mainwordsList, urlList);
 
 //            if (line.mainwords.equals("www") && line.urls.equals("www.youtube.com")){
 //                FileOperator.putLinesToFile("mainWords", String.join("\n", mainwordsList));
@@ -33,7 +30,10 @@ public class addSimilarityToDatabase {
 //                System.out.println(line.similarity);
 //            }
 
-            //if (Double.isNaN(line.similarity)) line.similarity = -1.0;
+            if (Double.isNaN(line.similarity)) line.similarity = -1.0;
+            if (line.mainwordsnippet.isEmpty() || line.urlssnippet.isEmpty()){
+                line.similarity = -1.0;
+            }
         }
 
         OriginDbService.getInstance().updateggsearch_copyOnSimilarity(dataList);

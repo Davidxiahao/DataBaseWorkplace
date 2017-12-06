@@ -55,7 +55,7 @@ public class makeVector {
         return (double)up / (Math.sqrt((double)value1) * Math.sqrt((double)value2));
     }
 
-    public static Map<String, Integer> readVector(List<String> list){
+    static Map<String, Integer> readVector(List<String> list){
         Map<String, Integer> result = new HashMap<>();
 
         for (String line : list){

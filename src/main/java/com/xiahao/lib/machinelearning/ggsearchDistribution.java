@@ -10,8 +10,7 @@ import java.util.Map;
 
 public class ggsearchDistribution {
     public static void main(String[] args) {
-        List<ggsearchModel> dataList = new ArrayList<>();
-        dataList.addAll(OriginDbService.getInstance().getAllDataFromggsearch());
+        List<ggsearchModel> dataList = new ArrayList<>(OriginDbService.getInstance().getAllDataFromggsearch());
 
         List<ggsearchModel> result = new ArrayList<>();
         int idx = 0;

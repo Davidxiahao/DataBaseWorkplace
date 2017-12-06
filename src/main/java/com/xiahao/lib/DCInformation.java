@@ -25,24 +25,23 @@ public class DCInformation {
                     String.join(";", value.mainwords),
                     value.total_frequence,
                     value.different_APK_frequence,
-                    String.join(";", value.APKs),
+                    "",
                     String.join(";", value.URLs)
             );
             resultList.add(line);
         }
 
         //ResultDbService.getInstance().createTableDCInformation();
-        ResultDbService.getInstance().insertDCInformation(resultList);
+        //ResultDbService.getInstance().insertDCInformation(resultList);
+        OriginDbService.getInstance().insertDCInformation(resultList);
     }
 
-    public static Map<String, DCInformationStructure> getAllData(){
-        List<OriginModel> dataBase = new ArrayList<>();
-        dataBase.addAll(OriginDbService.getInstance().getAllDataFromTable("last_origin_gp8w_meaningful"));
+    private static Map<String, DCInformationStructure> getAllData(){
+        List<OriginModel> dataBase = new ArrayList<>(OriginDbService.getInstance().getAllDataFromTable("last_origin_gp8w_meaningful"));
 
         Map<String, DCInformationStructure> result = new HashMap<>();
         for (OriginModel line : dataBase){
-            List<String> words = new ArrayList<>();
-            words.addAll(Arrays.asList(line.declaringClass.split("\\.")));
+            List<String> words = new ArrayList<>(Arrays.asList(line.declaringClass.split("\\.")));
 
             String DC;
             List<String> subwords = new ArrayList<>();
@@ -100,9 +99,7 @@ public class DCInformation {
                 info = result.get(DC);
             }
 
-            for (String string : line.webOrigins.split(";")){
-                info.URLs.add(string);
-            }
+            Collections.addAll(info.URLs, line.webOrigins.split(";"));
             info.APKs.add(line.apk);
             info.total_frequence++;
             info.different_APK_frequence = info.APKs.size();

@@ -10,8 +10,7 @@ import java.util.*;
 
 public class prepareFeatures {
     public static void main(String[] args) {
-        List<ggsearchModel> ggsearchResult = new ArrayList<>();
-        ggsearchResult.addAll(OriginDbService.getInstance().getAllDataFromggsearch());
+        List<ggsearchModel> ggsearchResult = new ArrayList<>(OriginDbService.getInstance().getAllDataFromggsearch());
 
         String totalString = "";
         for (ggsearchModel line : ggsearchResult){

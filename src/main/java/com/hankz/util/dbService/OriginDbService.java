@@ -51,8 +51,10 @@ public class OriginDbService {
                             rs.getString("codeHelpInfo"));
                     temp.idx = rs.getInt("idx");
                     temp.libNum = rs.getInt("libNum");
-                    temp.similarity = rs.getDouble("similarity");
-                    temp.keyWord = rs.getString("keyword");
+                    if (table.equals("last_origin_gp8w_meaningful_copy")) {
+                        temp.similarity = rs.getDouble("similarity");
+                        temp.keyWord = rs.getString("keyword");
+                    }
                     result.add(temp);
                 }
             });
@@ -131,6 +133,22 @@ public class OriginDbService {
         return result;
     }
 
+    public List<DCInformationModel> getAllDCInformationData(String table){
+        String sql = "select * from " + table;
+        List<DCInformationModel> result = new ArrayList<>();
+        dbHelper.doQuery(sql, rs -> {
+            while (rs.next()){
+                result.add(new DCInformationModel(rs.getString("DC"),
+                        rs.getString("mainwords"),
+                        rs.getInt("total_frequence"),
+                        rs.getInt("different_APK_frequence"),
+                        rs.getString("APKs"),
+                        rs.getString("URLs")));
+            }
+        });
+        return result;
+    }
+
     public void insertIntoggsearch_copy(List<ggsearchModel> list){
         String sql = "insert into ggsearch_copy2 (idx, mainwords, urls, mainwordsnippet, urlssnippet, urlssnippetfull, " +
                 "allmainwords, allurls) " +
@@ -179,6 +197,22 @@ public class OriginDbService {
                 ps.setString(5, line.urlssnippet);
                 ps.setString(6, line.urlssnippetfull);
                 ps.setDouble(7, line.similarity);
+                ps.addBatch();
+            }
+        });
+    }
+
+    public void insertDCInformation(List<DCInformationModel> list){
+        String sql = "insert into DCInformation (DC, mainwords, total_frequence, different_APK_frequence, APKs," +
+                " URLs) values (?, ?, ?, ?, ?, ?)";
+        dbHelper.doBatchUpdate(sql, ps -> {
+            for (DCInformationModel line : list){
+                ps.setString(1, line.DC);
+                ps.setString(2, line.mainwords);
+                ps.setInt(3, line.total_frequence);
+                ps.setInt(4, line.different_APK_frequence);
+                ps.setString(5, line.APKs);
+                ps.setString(6, line.URLs);
                 ps.addBatch();
             }
         });
