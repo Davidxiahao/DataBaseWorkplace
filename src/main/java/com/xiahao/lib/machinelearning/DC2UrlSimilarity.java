@@ -33,13 +33,18 @@ public class DC2UrlSimilarity {
             declaringClassList = declaringClassList.subList(0, declaringClassList.size() - 1);
             line.declaringClass = String.join(".", declaringClassList);
             for (String urlString : line.webOrigins.split(";")) {
-                double max = -1.0;
+                double max = -2.0;
+                boolean haveSearchAll = true;
                 for (String string : line.keywords) {
+                    if (!map.containsKey(string + urlString)){
+                        haveSearchAll = false;
+                    }
                     if (max < map.getOrDefault(string + urlString, -1.0)) {
                         max = map.getOrDefault(string + urlString, -1.0);
                         line.keyWord = string;
                     }
                 }
+                if (!haveSearchAll) max = -1.0;
 
                 if (min > max) min = max;
             }
@@ -58,20 +63,6 @@ public class DC2UrlSimilarity {
         for (OriginModel line : dataBase){
             List<String> words = new ArrayList<>();
             words.addAll(Arrays.asList(line.declaringClass.split("\\.")));
-
-            String DC;
-            List<String> subwords = new ArrayList<>();
-            if (words.size() <= 1) {
-                DC = words.get(0);
-                subwords.addAll(words);
-            }
-            else {
-                for (int i = 0; i < words.size()-1; i++){
-                    subwords.add(words.get(i));
-                }
-                DC = String.join(".", subwords);
-            }
-
 
             List<String> invertedSequenceOfWords = new ArrayList<>();
 

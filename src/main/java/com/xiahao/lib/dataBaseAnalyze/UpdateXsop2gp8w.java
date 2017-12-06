@@ -14,9 +14,10 @@ public class UpdateXsop2gp8w {
             if (line.similarity>=0.4){
                 line.isXSOP=0;
             }
-            else {
+            else if (line.similarity>=0.0){
                 line.isXSOP=1;
             }
+            else line.isXSOP=-1;
         }
 
         SampleDbService.getInstance().updatelast_origin_gp8w_meaningful(oldList);
