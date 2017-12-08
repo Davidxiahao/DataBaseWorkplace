@@ -19,6 +19,7 @@ public class OriginModel {
     public int isXSOP;
     public String PackageName;
     public String ApkName;
+    public int groundtruth;
 
     public OriginModel(String apk, String unit, String declaringClass,
                        String webOrigins, String codeOrigins, String webHelpInfo,

@@ -36,6 +36,21 @@ public class SampleDbService {
         });
     }
 
+    public List<OriginModel> getGroundTruthFromlast_origin_gp8w_meaningful(){
+        String sql = "select * from last_origin_gp8w_meaningful where groundtruth is not null";
+        List<OriginModel> result = new ArrayList<>();
+        dbHelper.doQuery(sql, rs -> {
+            while (rs.next()){
+                OriginModel temp = new OriginModel("", "", "", "", "","", "");
+                temp.idx = rs.getInt("idx");
+                temp.groundtruth = rs.getInt("groundtruth");
+                result.add(temp);
+            }
+        });
+
+        return result;
+    }
+
     /**
      * only an example
      * @return

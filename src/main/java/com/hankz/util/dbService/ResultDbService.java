@@ -154,6 +154,28 @@ public class ResultDbService {
         });
     }
 
+    public void updateKeyword(List<OriginModel> list){
+        String sql = "update last_origin_gp8w_meaningful_copy set keyword=? where idx=?";
+        dbHelper.doBatchUpdate(sql, ps -> {
+            for (OriginModel line : list){
+                ps.setString(1, line.keyWord);
+                ps.setInt(2, line.idx);
+                ps.addBatch();
+            }
+        });
+    }
+
+    public void updateGroundTruth(List<OriginModel> list){
+        String sql = "update last_origin_gp8w_meaningful_copy set groundtruth=? where idx=?";
+        dbHelper.doBatchUpdate(sql, ps -> {
+            for (OriginModel line : list){
+                ps.setInt(1, line.groundtruth);
+                ps.setInt(2, line.idx);
+                ps.addBatch();
+            }
+        });
+    }
+
     public void insertURLInformation(List<URLInformationModel> list){
         String sql = "insert into URLInformation (url, mainwords, total_frequence, different_DC_frequence," +
                 "different_APK_frequence, DCs, APKs) values (?, ?, ?, ?, ?, ?, ?)";

@@ -1,6 +1,7 @@
 package com.hankz.util.dbService;
 
 import com.hankz.util.dbutil.*;
+import com.xiahao.lib.DCInformation;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -138,12 +139,14 @@ public class OriginDbService {
         List<DCInformationModel> result = new ArrayList<>();
         dbHelper.doQuery(sql, rs -> {
             while (rs.next()){
-                result.add(new DCInformationModel(rs.getString("DC"),
+                DCInformationModel temp = new DCInformationModel(rs.getString("DC"),
                         rs.getString("mainwords"),
                         rs.getInt("total_frequence"),
                         rs.getInt("different_APK_frequence"),
                         rs.getString("APKs"),
-                        rs.getString("URLs")));
+                        rs.getString("URLs"));
+                temp.model_choice = rs.getInt("model_choice");
+                result.add(temp);
             }
         });
         return result;
@@ -213,6 +216,17 @@ public class OriginDbService {
                 ps.setInt(4, line.different_APK_frequence);
                 ps.setString(5, line.APKs);
                 ps.setString(6, line.URLs);
+                ps.addBatch();
+            }
+        });
+    }
+
+    public void updateDCInformation(List<DCInformationModel> list){
+        String sql = "update DCInformation set model_choice=? where DC=?";
+        dbHelper.doBatchUpdate(sql, ps -> {
+            for (DCInformationModel line : list){
+                ps.setInt(1, line.model_choice);
+                ps.setString(2, line.DC);
                 ps.addBatch();
             }
         });

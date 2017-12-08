@@ -6,19 +6,22 @@ import com.hankz.util.dbutil.DCInformationModel;
 import com.hankz.util.dbutil.OriginModel;
 import com.hankz.util.dbutil.ggsearchModel;
 import com.xiahao.lib.CreateWhiteList;
-import com.xiahao.lib.DCInformationStructure;
 import de.malkusch.whoisServerList.publicSuffixList.PublicSuffixList;
 import de.malkusch.whoisServerList.publicSuffixList.PublicSuffixListFactory;
 
 import java.util.*;
 
-public class DC2UrlSimilarity {
-
+public class DC2UrlSimilarity2 {
     private static PublicSuffixListFactory factory = new PublicSuffixListFactory();
     private static PublicSuffixList suffixList = factory.build();
 
     public static void main(String[] args) {
         List<ggsearchModel> data = OriginDbService.getInstance().getAllDataFromggsearch_copy();
+        List<DCInformationModel> positionList = OriginDbService.getInstance().getAllDCInformationData("DCInformation");
+        Map<String, DCInformationModel> string2Position = new HashMap<>();
+        for (DCInformationModel line : positionList){
+            string2Position.put(line.DC, line);
+        }
         Map<String, Double> map = new HashMap<>();
         for (ggsearchModel line : data){
             map.put(line.mainwords+line.urls, line.similarity);
@@ -27,39 +30,29 @@ public class DC2UrlSimilarity {
         List<OriginModel> list = getAllData();
 
         for (OriginModel line : list){
-            //line.similarity = map.getOrDefault(line.keyWord+line.webOrigins, -1.0);
             double min = 2.0;
             List<String> declaringClassList = new ArrayList<>(Arrays.asList(line.declaringClass.split("\\.")));
             declaringClassList = declaringClassList.subList(0, declaringClassList.size() - 1);
             line.declaringClass = String.join(".", declaringClassList);
 
-            //use the first three keywords
-            if (line.keywords.size()>3) {
-                line.keywords = line.keywords.subList(line.keywords.size()-3, line.keywords.size());
-            }
-
-            for (String urlString : line.webOrigins.split(";")) {
-                double max = -2.0;
-                boolean haveSearchAll = true;
-                for (String string : line.keywords) {
-                    if (map.getOrDefault(string + urlString, -1.0)==-1.0){
-                        haveSearchAll = false;
-                    }
-                    if (max < map.getOrDefault(string + urlString, -1.0)) {
-                        max = map.getOrDefault(string + urlString, -1.0);
-                        line.keyWord = string;
+            if (string2Position.containsKey(line.declaringClass)) {
+                int position = string2Position.get(line.declaringClass).model_choice;
+                position = line.keywords.size() - position;
+                String keyword = line.keywords.get(position);
+                for (String urlString : line.webOrigins.split(";")) {
+                    double similarity = map.getOrDefault(keyword + urlString, -1.0);
+                    if (similarity<min) {
+                        min = similarity;
+                        line.keyWord = keyword;
                     }
                 }
-                if (!haveSearchAll) max = -1.0;
-
-                if (min > max) min = max;
+                line.similarity = min;
             }
-            line.similarity = min;
         }
 
+        ResultDbService.getInstance().updateKeyword(list);
         //ResultDbService.getInstance().createTablefinal_origin_gp8w_meaningful_copy();
         //ResultDbService.getInstance().insertfinal_origin_gp8w_meaningful_copy(list);
-        OriginDbService.getInstance().insertfinal_origin_gp8w_meaningful_copy(list);
     }
 
     public static List<OriginModel> getAllData(){
