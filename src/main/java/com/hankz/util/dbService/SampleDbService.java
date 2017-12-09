@@ -51,6 +51,27 @@ public class SampleDbService {
         return result;
     }
 
+    public List<OriginModel> getAllDataFromlast_origin_gp8w_meaningful(){
+        String sql = "select * from last_origin_gp8w_meaningful";
+        List<OriginModel> result = new ArrayList<>();
+        dbHelper.doQuery(sql, rs -> {
+            while ((rs.next())){
+                OriginModel temp = new OriginModel(rs.getString("apk"),
+                        rs.getString("unit"),
+                        rs.getString("declaringClass"),
+                        rs.getString("webOrigins"),
+                        rs.getString("codeOrigins"),
+                        rs.getString("webHelpInfo"),
+                        rs.getString("codeHelpInfo"));
+                temp.idx = rs.getInt("idx");
+                temp.libNum = rs.getInt("libNum");
+                result.add(temp);
+            }
+        });
+
+        return result;
+    }
+
     /**
      * only an example
      * @return

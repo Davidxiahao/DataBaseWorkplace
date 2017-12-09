@@ -99,6 +99,32 @@ public class ResultDbService {
         dbHelper.doUpdate(sql);
     }
 
+    public void createCompareTable(){
+        String sql = "create table Compare" +
+                "(idx integer," +
+                "apk text," +
+                "apkname text," +
+                "DC text," +
+                "AN text," +
+                "PN text)";
+        dbHelper.doUpdate(sql);
+    }
+
+    public void insertCompare(List<CompareModel> list){
+        String sql = "insert into Compare (idx, apk, apkname, DC, AN, PN) values (?, ?, ?, ?, ?, ?)";
+        dbHelper.doBatchUpdate(sql, ps -> {
+            for (CompareModel line : list){
+                ps.setInt(1, line.idx);
+                ps.setString(2, line.apk);
+                ps.setString(3, line.apkname);
+                ps.setString(4, line.DC);
+                ps.setString(5, line.AN);
+                ps.setString(6, line.PN);
+                ps.addBatch();
+            }
+        });
+    }
+
     public void insertfinal_origin_gp8w_meaningful_copy(List<OriginModel> list){
         String sql = "insert into last_origin_gp8w_meaningful_copy (idx, libNum, apk, unit, declaringClass, " +
                 "webOrigins, keyword, similarity, codeOrigins, webHelpInfo, codeHelpInfo) values " +
