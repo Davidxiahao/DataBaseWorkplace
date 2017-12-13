@@ -164,6 +164,7 @@ public class OriginDbService {
                         rs.getString("APKs"),
                         rs.getString("URLs"));
                 temp.model_choice = rs.getInt("model_choice");
+                temp.mainwordsnippet = rs.getString("mainwordsnippet");
                 result.add(temp);
             }
         });
