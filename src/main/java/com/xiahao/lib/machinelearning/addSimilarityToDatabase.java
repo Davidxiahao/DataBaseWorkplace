@@ -13,11 +13,9 @@ public class addSimilarityToDatabase {
         dataList.addAll(OriginDbService.getInstance().getAllDataFromggsearch_copy());
 
         for (ggsearchModel line : dataList){
-            List<String> mainwordsList = new ArrayList<>();
-            List<String> urlList = new ArrayList<>();
 
-            mainwordsList.addAll(countWords.getWordsVector(line.mainwordsnippet));
-            urlList.addAll(countWords.getWordsVector(line.urlssnippet));
+            List<String> mainwordsList = new ArrayList<>(countWords.getWordsVector(line.mainwordsnippet));
+            List<String> urlList = new ArrayList<>(countWords.getWordsVector(line.urlssnippet));
 
             line.similarity = makeVector.getSimilarity(mainwordsList, urlList);
 

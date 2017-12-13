@@ -8,6 +8,7 @@ public class DCInformationModel {
     public String APKs;
     public String URLs;
     public int model_choice;
+    public String mainwordsnippet;
 
     public DCInformationModel(String DC, String mainwords, int total_frequence, int different_APK_frequence,
                               String APKs, String URLs){

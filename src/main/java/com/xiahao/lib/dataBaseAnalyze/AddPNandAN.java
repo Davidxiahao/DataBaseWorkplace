@@ -1,6 +1,7 @@
 package com.xiahao.lib.dataBaseAnalyze;
 
 import com.hankz.util.dbService.OriginDbService;
+import com.hankz.util.dbService.SampleDbService;
 import com.hankz.util.dbutil.OriginModel;
 import com.hankz.util.dbutil.ggsearchModel;
 import com.xiahao.lib.CreateWhiteList;
@@ -39,11 +40,11 @@ public class AddPNandAN {
             }
         }
         System.out.println(sum);
-        OriginDbService.getInstance().insertIntoggsearch_wait(resultList);
+        //OriginDbService.getInstance().insertIntoggsearch_wait(resultList);
     }
 
-    private static List<OriginModel> getAllData(){
-        List<OriginModel> dataBase = new ArrayList<>(OriginDbService.getInstance().getAllDataFromTable("last_origin_gp8w_meaningful"));
+    public static List<OriginModel> getAllData(){
+        List<OriginModel> dataBase = new ArrayList<>(SampleDbService.getInstance().getAllDataFromlast_origin_gp8w_meaningful());
 
         for (OriginModel line : dataBase){
             List<String> words = new ArrayList<>(Arrays.asList(line.declaringClass.split("\\.")));
@@ -60,12 +61,15 @@ public class AddPNandAN {
                 else {
                     line.PackageName = packageName;
                     List<String> pnWords = new ArrayList<>(Arrays.asList(line.PackageName.split("\\.")));
+                    //System.out.println("1 "+pnWords);
                     removePublicSuffix(line, pnWords);
                 }
             }
             else {
                 line.PackageName = "";
             }
+
+            //System.out.println("2 "+line.PackageName);
 
             if (!line.ApkName.equals(line.declaringClass)) removePublicSuffix(line, apkWords);
 
@@ -129,6 +133,7 @@ public class AddPNandAN {
 
         //List<String> keyWordsList = new ArrayList<>();
 
+        //System.out.println("3 "+keyWords);
         for (String string : keyWords.split("\\.")){
             //keyWordsList.add(string);
             if (!line.keywords.contains(string)) {

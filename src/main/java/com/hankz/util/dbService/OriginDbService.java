@@ -101,7 +101,7 @@ public class OriginDbService {
     }
 
     public List<ggsearchModel> getAllDataFromggsearch(){
-        String sql = "select * from ggsearch_wait";
+        String sql = "select * from ggsearch_apkname_keywords";
         List<ggsearchModel> result = new ArrayList<>();
         dbHelper.doQuery(sql, rs -> {
             while (rs.next()){
@@ -118,6 +118,24 @@ public class OriginDbService {
 
     public List<ggsearchModel> getAllDataFromggsearch_copy(){
         String sql = "select * from ggsearch_copy2";
+        List<ggsearchModel> result = new ArrayList<>();
+        dbHelper.doQuery(sql, rs -> {
+            while (rs.next()){
+                ggsearchModel temp = new ggsearchModel(rs.getInt("idx"),
+                        rs.getString("mainwords"),
+                        rs.getString("urls"),
+                        rs.getString("mainwordsnippet"),
+                        rs.getString("urlssnippet"),
+                        rs.getString("urlssnippetfull"));
+                temp.similarity = rs.getDouble("similarity");
+                result.add(temp);
+            }
+        });
+        return result;
+    }
+
+    public List<ggsearchModel> getAllDataFromggsearch_full(){
+        String sql = "select * from ggsearch_full3";
         List<ggsearchModel> result = new ArrayList<>();
         dbHelper.doQuery(sql, rs -> {
             while (rs.next()){

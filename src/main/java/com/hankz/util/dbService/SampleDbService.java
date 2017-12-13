@@ -65,6 +65,9 @@ public class SampleDbService {
                         rs.getString("codeHelpInfo"));
                 temp.idx = rs.getInt("idx");
                 temp.libNum = rs.getInt("libNum");
+                temp.similarity = rs.getDouble("similarity");
+                temp.keyWord = rs.getString("keyword");
+                temp.isXSOP = rs.getInt("isXSOP");
                 result.add(temp);
             }
         });
