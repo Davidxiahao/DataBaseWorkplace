@@ -20,6 +20,7 @@ public class OriginModel {
     public String PackageName;
     public String ApkName;
     public int groundtruth;
+    public String developers;
 
     public OriginModel(String apk, String unit, String declaringClass,
                        String webOrigins, String codeOrigins, String webHelpInfo,

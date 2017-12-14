@@ -36,6 +36,18 @@ public class SampleDbService {
         });
     }
 
+    public void updateDevelopers(List<OriginModel> list){
+        String sql = "update last_origin_gp8w_meaningful set developers=? where idx=?";
+        dbHelper.doBatchUpdate(sql, ps -> {
+            for (OriginModel line : list){
+                //System.out.println(line.developers+" "+line.idx);
+                ps.setString(1, line.developers);
+                ps.setInt(2, line.idx);
+                ps.addBatch();
+            }
+        });
+    }
+
     public List<OriginModel> getGroundTruthFromlast_origin_gp8w_meaningful(){
         String sql = "select * from last_origin_gp8w_meaningful where groundtruth is not null";
         List<OriginModel> result = new ArrayList<>();
