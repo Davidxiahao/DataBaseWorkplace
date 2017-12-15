@@ -240,6 +240,17 @@ public class OriginDbService {
         });
     }
 
+    public void updateggsearchfullOnUrl(List<ggsearchModel> list){
+        String sql = "update ggsearch_full3 set urls=? where idx=?";
+        dbHelper.doBatchUpdate(sql, ps -> {
+            for (ggsearchModel line : list){
+                ps.setString(1, line.urls);
+                ps.setInt(2, line.idx);
+                ps.addBatch();
+            }
+        });
+    }
+
     public void updateDCInformation(List<DCInformationModel> list){
         String sql = "update DCInformation set model_choice=? where DC=?";
         dbHelper.doBatchUpdate(sql, ps -> {

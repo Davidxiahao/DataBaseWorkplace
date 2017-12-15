@@ -11,14 +11,16 @@ import java.util.Map;
 public class UpdateSimilarity {
     public static void main(String[] args) {
         List<ggsearchModel> similarityList = OriginDbService.getInstance().getAllDataFromggsearch_copy();
-        List<ggsearchModel> urlList = OriginDbService.getInstance().getAllDataFromggsearch();
+        List<ggsearchModel> urlList = OriginDbService.getInstance().getAllDataFromggsearch_full();
 
         Map<String, String> urlMap = new HashMap<>();
         for (ggsearchModel line : urlList){
-            //System.out.println(line.urls);
-            for (int i=0; i<line.urls.split(";").length; i++){
+            //System.out.println(line.urls+" "+line.urlssnippetfull);
+            for (int i=0; i<line.urls.split(";").length; i++) {
                 //System.out.println(i);
-                urlMap.put(line.urls.split(";")[i], line.urlssnippet.split("}@\\{", line.urls.split(";").length)[i]);
+                if (i<line.urlssnippetfull.split("}@\\{", -1).length) {
+                    urlMap.put(line.urls.split(";")[i], line.urlssnippetfull.split("}@\\{", line.urls.split(";").length)[i]);
+                }
             }
         }
 
@@ -49,7 +51,7 @@ public class UpdateSimilarity {
             }
         }
 
-        //OriginDbService.getInstance().updateggsearch_copyOnSimilarity(resultList);
+        OriginDbService.getInstance().updateggsearch_copyOnSimilarity(resultList);
         System.out.println(resultList.size());
     }
 }

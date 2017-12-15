@@ -2,6 +2,7 @@ package com.xiahao.lib.machinelearning;
 
 import com.hankz.util.dbService.OriginDbService;
 import com.hankz.util.dbService.ResultDbService;
+import com.hankz.util.dbService.SampleDbService;
 import com.hankz.util.dbutil.DCInformationModel;
 import com.hankz.util.dbutil.OriginModel;
 import com.hankz.util.dbutil.ggsearchModel;
@@ -57,13 +58,11 @@ public class DC2UrlSimilarity {
             line.similarity = min;
         }
 
-        //ResultDbService.getInstance().createTablefinal_origin_gp8w_meaningful_copy();
-        //ResultDbService.getInstance().insertfinal_origin_gp8w_meaningful_copy(list);
-        OriginDbService.getInstance().insertfinal_origin_gp8w_meaningful_copy(list);
+        SampleDbService.getInstance().updatelast_origin_gp8w_meaningful(list);
     }
 
     public static List<OriginModel> getAllData(){
-        List<OriginModel> dataBase = new ArrayList<>(OriginDbService.getInstance().getAllDataFromTable("last_origin_gp8w_meaningful"));
+        List<OriginModel> dataBase = new ArrayList<>(SampleDbService.getInstance().getAllDataFromlast_origin_gp8w_meaningful());
 
         for (OriginModel line : dataBase){
             List<String> words = new ArrayList<>(Arrays.asList(line.declaringClass.split("\\.")));
