@@ -47,13 +47,13 @@ public class Updateggsearchcopy2forPNandAN {
                 String temp = "";
                 double min = 2.0;
                 for (String url : line.webOrigins.split(";")) {
-                    Double max = -1.0;
+                    double max = -1.0;
                     String temperated = "";
                     for (String keyword : line.keywords) {
                         if (!calculatedMap.containsKey(keyword + url) && wordsMap.containsKey(keyword) && urlMap.containsKey(url)) {
                             List<String> mainwordsList = new ArrayList<>(countWords.getWordsVector(wordsMap.get(keyword)));
                             List<String> urlList = new ArrayList<>(countWords.getWordsVector(urlMap.get(url)));
-                            Double similarity = makeVector.getSimilarity(mainwordsList, urlList);
+                            double similarity = makeVector.getSimilarity(mainwordsList, urlList);
                             if (Double.isNaN(similarity)) similarity = -1.0;
                             if (similarity > max) {
                                 max = similarity;

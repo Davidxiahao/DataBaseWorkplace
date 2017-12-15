@@ -24,4 +24,6 @@ dependencies {
 
     // https://mvnrepository.com/artifact/info.debatty/java-string-similarity
     compile group: 'info.debatty', name: 'java-string-similarity', version: '1.0.0'
+
+    compile 'com.google.cloud:google-cloud-translate:1.14.0'
 }

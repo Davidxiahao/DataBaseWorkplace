@@ -29,10 +29,14 @@ public class AddDevelopers2Meaningful {
                 catch (Exception e){
                     System.out.println(e.toString());
                 }
+
+                if (!line.developers.equals(apk2Developers.get(line.ApkName))){
+                    System.out.println(line.developers+"/ /"+apk2Developers.get(line.ApkName));
+                }
             }
         }
 
-        SampleDbService.getInstance().updateDevelopers(meaningfulList);
+        //SampleDbService.getInstance().updateDevelopers(meaningfulList);
     }
 
     public static String filterOffUtf8Mb4(String text) throws UnsupportedEncodingException {
