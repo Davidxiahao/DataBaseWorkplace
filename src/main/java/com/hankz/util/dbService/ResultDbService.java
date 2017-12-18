@@ -31,6 +31,17 @@ public class ResultDbService {
         dbHelper.doUpdate(sql);
     }
 
+    public void createTableDeveloperXSOP(){
+        String sql = "create table DeveloperXSOP" +
+                "(idx   integer," +
+                "domain text," +
+                "developer  text," +
+                "isXSOP integer," +
+                "counts integer)";
+
+        dbHelper.doUpdate(sql);
+    }
+
     public void creatTableTest(){
         String sql =    "create table   test"  +
                         "(apk           text," +
@@ -108,6 +119,20 @@ public class ResultDbService {
                 "AN text," +
                 "PN text)";
         dbHelper.doUpdate(sql);
+    }
+
+    public void insertDeveloperXSOP(List<DeveloperXSOPModel> list){
+        String sql = "insert into DeveloperXSOP (idx, domain, developer, isXSOP, counts) values (?, ?, ?, ?, ?)";
+        dbHelper.doBatchUpdate(sql, ps -> {
+           for (DeveloperXSOPModel line : list){
+               ps.setInt(1, line.idx);
+               ps.setString(2, line.domain);
+               ps.setString(3, line.developer);
+               ps.setInt(4, line.isXSOP);
+               ps.setInt(5, line.counts);
+               ps.addBatch();
+           }
+        });
     }
 
     public void insertCompare(List<CompareModel> list){

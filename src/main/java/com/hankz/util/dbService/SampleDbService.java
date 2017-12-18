@@ -80,6 +80,7 @@ public class SampleDbService {
                 temp.similarity = rs.getDouble("similarity");
                 temp.keyWord = rs.getString("keyword");
                 temp.isXSOP = rs.getInt("isXSOP");
+                temp.developers = rs.getString("developers");
                 result.add(temp);
             }
         });

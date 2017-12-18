@@ -15,8 +15,7 @@ public class URLInformation {
     private static PublicSuffixList suffixList = factory.build();
 
     public static void main(String[] args) {
-        List<OriginModel> dataBase = new ArrayList<>();
-        dataBase.addAll(OriginDbService.getInstance().getAllDataFromTable("last_origin_gp8w_meaningful"));
+        List<OriginModel> dataBase = new ArrayList<>(OriginDbService.getInstance().getAllDataFromTable("last_origin_gp8w_meaningful"));
 
         Map<String, URLInformationStructure> result = new HashMap<>();
         for (OriginModel line : dataBase){
