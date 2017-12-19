@@ -6,6 +6,7 @@ import java.util.List;
 public class OriginModel {
     public int idx;
     public int libNum;
+    public int libNumHashOnly;
     public final String apk;
     public final String unit;
     public  String declaringClass;

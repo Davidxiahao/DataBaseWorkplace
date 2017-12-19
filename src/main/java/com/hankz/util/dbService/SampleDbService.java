@@ -81,6 +81,7 @@ public class SampleDbService {
                 temp.keyWord = rs.getString("keyword");
                 temp.isXSOP = rs.getInt("isXSOP");
                 temp.developers = rs.getString("developers");
+                temp.libNumHashOnly = rs.getInt("libNumHashOnly");
                 result.add(temp);
             }
         });
