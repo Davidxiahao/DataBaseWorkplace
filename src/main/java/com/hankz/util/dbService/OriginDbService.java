@@ -135,7 +135,7 @@ public class OriginDbService {
     }
 
     public List<ggsearchModel> getAllDataFromggsearch_full(){
-        String sql = "select * from ggsearch_full3";
+        String sql = "select * from ggsearch_full";
         List<ggsearchModel> result = new ArrayList<>();
         dbHelper.doQuery(sql, rs -> {
             while (rs.next()){
@@ -319,6 +319,17 @@ public class OriginDbService {
                 ps.setString(1, line.mainwordsnippet);
                 ps.setString(2, line.urlssnippet);
                 ps.setInt(3, line.idx);
+                ps.addBatch();
+            }
+        });
+    }
+
+    public void updateggsearch_copyOnSnippet(List<ggsearchModel> list){
+        String sql = "update ggsearch_copy set mainwordsnippet=? where mainwords=?";
+        dbHelper.doBatchUpdate(sql, ps -> {
+            for (ggsearchModel line : list){
+                ps.setString(1, line.mainwordsnippet);
+                ps.setString(2, line.mainwords);
                 ps.addBatch();
             }
         });

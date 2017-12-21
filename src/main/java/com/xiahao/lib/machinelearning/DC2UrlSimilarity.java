@@ -56,7 +56,7 @@ public class DC2UrlSimilarity {
                 if (min > max) min = max;
             }
             line.similarity = min;
-            if (line.similarity>=0.34){
+            if (line.similarity>=0.3){
                 line.isXSOP=0;
             }
             else if (line.similarity>=0.0){

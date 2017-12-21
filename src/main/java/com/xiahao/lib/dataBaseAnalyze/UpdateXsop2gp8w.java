@@ -8,10 +8,10 @@ import java.util.List;
 
 public class UpdateXsop2gp8w {
     public static void main(String[] args) {
-        List<OriginModel> oldList = OriginDbService.getInstance().getAllDataFromTable("last_origin_gp8w_meaningful_copy");
+        List<OriginModel> oldList = SampleDbService.getInstance().getAllDataFromlast_origin_gp8w_meaningful();
 
         for (OriginModel line : oldList){
-            if (line.similarity>=0.4){
+            if (line.similarity>=0.3){
                 line.isXSOP=0;
             }
             else if (line.similarity>=0.0){
