@@ -30,7 +30,7 @@ public class OriginDbService {
 
         dbHelper.doQuery(sql, rs -> {
             while (rs.next()){
-                result.add(new Double(rs.getDouble("similarity")));
+                result.add(rs.getDouble("similarity"));
             }
         });
 
@@ -117,7 +117,7 @@ public class OriginDbService {
     }
 
     public List<ggsearchModel> getAllDataFromggsearch_copy(){
-        String sql = "select * from ggsearch_copy";
+        String sql = "select * from ggsearch_copy2";
         List<ggsearchModel> result = new ArrayList<>();
         dbHelper.doQuery(sql, rs -> {
             while (rs.next()){
@@ -268,6 +268,17 @@ public class OriginDbService {
         });
     }
 
+    public void updateggsearchfullOnUrlsnippetfull(List<ggsearchModel> list){
+        String sql = "update ggsearch_full3 set urlssnippetfull=? where idx=?";
+        dbHelper.doBatchUpdate(sql, ps -> {
+            for (ggsearchModel line : list){
+                ps.setString(1, line.urlssnippetfull);
+                ps.setInt(2, line.idx);
+                ps.addBatch();
+            }
+        });
+    }
+
     public void updateDCInformation(List<DCInformationModel> list){
         String sql = "update DCInformation set model_choice=? where DC=?";
         dbHelper.doBatchUpdate(sql, ps -> {
@@ -296,6 +307,18 @@ public class OriginDbService {
             for (ggsearchModel line : list){
                 ps.setDouble(1, line.similarity);
                 ps.setInt(2, line.idx);
+                ps.addBatch();
+            }
+        });
+    }
+
+    public void updateggsearch_copy2OnSnippet(List<ggsearchModel> list){
+        String sql = "update ggsearch_copy2 set mainwordsnippet=?, urlssnippet=? where idx=?";
+        dbHelper.doBatchUpdate(sql, ps -> {
+            for (ggsearchModel line : list){
+                ps.setString(1, line.mainwordsnippet);
+                ps.setString(2, line.urlssnippet);
+                ps.setInt(3, line.idx);
                 ps.addBatch();
             }
         });

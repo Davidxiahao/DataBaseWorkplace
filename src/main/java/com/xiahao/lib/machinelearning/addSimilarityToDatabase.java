@@ -9,8 +9,7 @@ import java.util.List;
 
 public class addSimilarityToDatabase {
     public static void main(String[] args) {
-        List<ggsearchModel> dataList = new ArrayList<>();
-        dataList.addAll(OriginDbService.getInstance().getAllDataFromggsearch_copy());
+        List<ggsearchModel> dataList = new ArrayList<>(OriginDbService.getInstance().getAllDataFromggsearch_copy());
 
         for (ggsearchModel line : dataList){
 

@@ -26,13 +26,13 @@ public class UpdateSimilarity {
 
         List<ggsearchModel> resultList = new ArrayList<>();
         for (ggsearchModel line : similarityList){
-            if (line.similarity<0.3){
+            if (!line.mainwordsnippet.equals("")){
                 if (line.urls.contains("URL:")){
                     line.urls = line.urls.replaceFirst("URL:", "");
                     System.out.println(line.idx+" "+line.urls);
                 }
 
-                if (urlMap.containsKey(line.urls)){
+                if (urlMap.containsKey(line.urls) && !urlMap.get(line.urls).equals("")){
 
                     List<String> mainwordsList = new ArrayList<>(countWords.getWordsVector(line.mainwordsnippet));
                     List<String> urlMapList = new ArrayList<>(countWords.getWordsVector(urlMap.get(line.urls)));

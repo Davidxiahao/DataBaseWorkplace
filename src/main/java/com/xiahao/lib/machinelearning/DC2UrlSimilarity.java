@@ -56,6 +56,13 @@ public class DC2UrlSimilarity {
                 if (min > max) min = max;
             }
             line.similarity = min;
+            if (line.similarity>=0.34){
+                line.isXSOP=0;
+            }
+            else if (line.similarity>=0.0){
+                line.isXSOP=1;
+            }
+            else line.isXSOP=-1;
         }
 
         SampleDbService.getInstance().updatelast_origin_gp8w_meaningful(list);
