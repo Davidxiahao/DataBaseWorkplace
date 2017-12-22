@@ -11,7 +11,7 @@ public class UpdateXsop2gp8w {
         List<OriginModel> oldList = SampleDbService.getInstance().getAllDataFromlast_origin_gp8w_meaningful();
 
         for (OriginModel line : oldList){
-            if (line.similarity>=0.3){
+            if (line.similarity>=0.31){
                 line.isXSOP=0;
             }
             else if (line.similarity>=0.0){

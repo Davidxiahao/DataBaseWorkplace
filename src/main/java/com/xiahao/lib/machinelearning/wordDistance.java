@@ -24,8 +24,8 @@ public class wordDistance {
 //                }
 //            }
 //        }
-        String string1 = "shopping";
-        String string2 = "shopping";
-        System.out.println(l.distance(string1, string2)/l.distance("", string2));
+        String string1 = "nic";
+        String string2 = "ni";
+        System.out.println(l.distance(string1, string2)/l.distance("", string1));
     }
 }
