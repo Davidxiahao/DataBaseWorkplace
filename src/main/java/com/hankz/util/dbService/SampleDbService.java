@@ -48,6 +48,20 @@ public class SampleDbService {
         });
     }
 
+    public int getNumber(double start){
+        String sql = "select count(*) from last_origin_gp8w_meaningful where similarity>=? and similarity<?";
+        List<Integer> result = new ArrayList<>();
+        dbHelper.doQuery(sql, ps -> {
+            ps.setDouble(1, start);
+            ps.setDouble(2, start+0.05);
+        }, rs -> {
+            rs.next();
+            result.add(rs.getInt(1));
+        });
+
+        return result.get(0);
+    }
+
     public List<OriginModel> getGroundTruthFromlast_origin_gp8w_meaningful(){
         String sql = "select * from last_origin_gp8w_meaningful where groundtruth is not null";
         List<OriginModel> result = new ArrayList<>();

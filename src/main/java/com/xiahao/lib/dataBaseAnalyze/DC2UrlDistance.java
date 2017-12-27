@@ -10,6 +10,7 @@ import de.malkusch.whoisServerList.publicSuffixList.PublicSuffixListFactory;
 import info.debatty.java.stringsimilarity.Levenshtein;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 public class DC2UrlDistance {
@@ -65,13 +66,18 @@ public class DC2UrlDistance {
                         line.keywords = line.keywords.subList(line.keywords.size()-3, line.keywords.size());
                     }
 
+                    if (line.developers!=null) {
+                        line.keywords.addAll(Arrays.asList(line.developers.split(" ")));
+                    }
+
                     boolean checkDC2Url = false;
                     for (String urlword : templist) {
                         for (String dcword : line.keywords){
-                            String longString = dcword;
-                            System.out.println(urlword+" "+dcword);
+                            String ldcword = dcword.toLowerCase();
+                            String longString = ldcword;
+                            System.out.println(urlword+" "+ldcword);
                             if (urlword.length()>longString.length())longString = urlword;
-                            double distance = l.distance(urlword, dcword)/l.distance("", longString);
+                            double distance = l.distance(urlword, ldcword)/l.distance("", longString);
                             System.out.println(distance);
                             if (distance<0.3) {
                                 checkDC2Url=true;
@@ -92,6 +98,11 @@ public class DC2UrlDistance {
                     line.similarity = record;
                     line.keyWord = keyword;
                 }
+//                else {
+//                    line.isXSOP=1;
+//                    line.similarity = record;
+//                    line.keyWord = keyword;
+//                }
             }
         }
 
