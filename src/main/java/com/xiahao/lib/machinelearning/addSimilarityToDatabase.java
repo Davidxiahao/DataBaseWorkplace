@@ -18,15 +18,6 @@ public class addSimilarityToDatabase {
 
             line.similarity = makeVector.getSimilarity(mainwordsList, urlList);
 
-//            if (line.mainwords.equals("www") && line.urls.equals("www.youtube.com")){
-//                FileOperator.putLinesToFile("mainWords", String.join("\n", mainwordsList));
-//                FileOperator.putLinesToFile("URLs", String.join("\n", urlList));
-//                System.out.println(line.mainwords);
-//                System.out.println(line.urls);
-//                line.similarity = makeVector.getSimilarity(mainwordsList, urlList);
-//                System.out.println(line.similarity);
-//            }
-
             if (Double.isNaN(line.similarity)) line.similarity = -1.0;
             if (line.mainwordsnippet.isEmpty() || line.urlssnippet.isEmpty()){
                 line.similarity = -1.0;
